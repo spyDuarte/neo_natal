@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeoEvolve v7 — Evolução Neonatal</title>
+<title>NeoEvolve v7 — Evolução Neonatal (Modo Estendido)</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -36,58 +36,31 @@ header{
 .logo{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;}
 .badge{background:#fff;color:#000;font-size:9px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
 .spacer{flex:1;}
-.header-patient{font-family:var(--mono);font-size:11px;color:#999;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .2s;}
-.header-patient.filled{color:#fff;}
+.header-patient{font-family:var(--mono);font-size:11px;color:#999;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .header-progress{display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .prog-bar{width:80px;height:4px;background:#333;border-radius:2px;overflow:hidden;}
 .prog-fill{height:100%;background:#fff;border-radius:2px;transition:width .4s ease;width:0%;}
 .prog-txt{font-family:var(--mono);font-size:10px;color:#999;min-width:24px;text-align:right;}
-.date-txt{font-family:var(--mono);font-size:10px;color:#666;white-space:nowrap;}
-
-/* RESTORE BANNER */
-#restoreBanner{
-  display:none;
-  background:#fffbe6;border-bottom:2px solid #e8c94a;
-  padding:8px 18px;font-size:12px;color:#7a5c00;
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--mono);
-}
-#restoreBanner.hidden{display:none;}
-#restoreBanner button{
-  background:#e8c94a;border:none;border-radius:2px;color:#000;
-  font-size:10px;font-weight:700;padding:3px 10px;cursor:pointer;
-  font-family:var(--mono);letter-spacing:.05em;
-}
 
 /* LAYOUT */
 .layout{display:grid;grid-template-columns:1fr 390px;height:calc(100vh - 44px);}
 
 /* FORM PANEL */
-.form-panel{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:7px;}
+.form-panel{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px;}
 
-/* TOOLBAR */
-.toolbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:2px 0 3px;}
-.toolbar-label{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;}
-
-/* SECTIONS */
-.sec{border:1px solid var(--border);border-radius:4px;overflow:hidden;transition:border-color .2s;}
-.sec.has-data{border-color:#bbb;}
+/* SECTIONS - SEMPRE ABERTAS */
+.sec{border:1px solid var(--border);border-radius:4px;overflow:hidden; margin-bottom: 5px;}
 .sec-head{
   padding:9px 12px;display:flex;align-items:center;gap:9px;
-  cursor:pointer;user-select:none;border-left:4px solid #000;
-  transition:background .12s;
+  border-left:4px solid #000;
+  background: #fcfcfc;
 }
-.sec-head:hover{background:#f2f2f2;}
-.sec-head:active{background:#eaeaea;}
 .sec-icon{font-size:15px;flex-shrink:0;line-height:1;}
 .sec-info{flex:1;min-width:0;}
 .sec-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono);}
 .sec-sub{font-size:10px;color:var(--muted);margin-top:1px;}
-.sec-dot{width:7px;height:7px;border-radius:50%;background:#e0e0e0;border:1.5px solid #ccc;flex-shrink:0;transition:background .25s,border-color .25s;}
+.sec-dot{width:7px;height:7px;border-radius:50%;background:#e0e0e0;border:1.5px solid #ccc;flex-shrink:0;}
 .sec-dot.filled{background:#000;border-color:#000;}
-.sec-arrow{color:var(--muted);font-size:11px;transition:transform .2s;flex-shrink:0;}
-.sec.closed .sec-body{display:none;}
-.sec.closed .sec-arrow{transform:rotate(-90deg);}
 
 .sec-body{padding:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .sec-body.one{grid-template-columns:1fr;}
@@ -102,140 +75,24 @@ header{
   font-family:var(--mono);display:flex;align-items:center;gap:5px;flex-wrap:wrap;
 }
 .lbl-hint{font-size:9px;font-weight:400;color:#aaa;text-transform:none;letter-spacing:0;font-family:var(--sans);margin-left:auto;}
-.chip-count{
-  display:none;background:#000;color:#fff;
-  font-size:9px;font-weight:700;min-width:16px;height:16px;padding:0 4px;
-  border-radius:8px;align-items:center;justify-content:center;
-  font-family:var(--mono);flex-shrink:0;
-}
 
 /* INPUTS */
 input[type=text],input[type=number],input[type=time],input[type=date],select,textarea{
   background:var(--bg);border:1px solid var(--border);border-radius:3px;
   color:var(--text);font-family:var(--sans);font-size:13px;
   padding:6px 9px;width:100%;outline:none;
-  transition:border-color .1s,background .15s;
 }
-input:focus,select:focus,textarea:focus{
-  border-color:#000;border-width:2px;
-  box-shadow:0 0 0 3px rgba(0,0,0,.07);outline:none;
-}
-input[readonly]{background:#f7f7f7;color:var(--muted);cursor:default;}
-textarea{resize:vertical;min-height:52px;}
-
-/* Vital sign coloring */
-input.vital-ok  {border-color:#7cc4a0;background:var(--ok-bg);}
-input.vital-warn{border-color:#e8a44a;background:var(--warn-bg);}
-input.vital-err {border-color:#e06077;background:var(--err-bg);}
-
-/* APGAR */
-.apgar-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.apgar-score{display:flex;flex-direction:column;align-items:center;gap:3px;}
-.apgar-score label{font-size:9px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
-.apgar-score input{text-align:center;font-weight:700;font-family:var(--mono);font-size:16px;padding:8px 4px;}
-.apgar-score input.s-ok  {border-color:#7cc4a0;background:var(--ok-bg);  color:var(--ok);}
-.apgar-score input.s-warn{border-color:#e8a44a;background:var(--warn-bg);color:var(--warn);}
-.apgar-score input.s-err {border-color:#e06077;background:var(--err-bg); color:var(--err);}
+input:focus,select:focus,textarea:focus{border-color:#000; border-width: 1px; box-shadow: 0 0 0 2px rgba(0,0,0,0.05);}
 
 /* CHIPS */
 .chips{display:flex;flex-wrap:wrap;gap:5px;}
 .chip{
   padding:5px 11px;border-radius:3px;border:1.5px solid #ccc;
   font-size:11.5px;cursor:pointer;background:#fff;color:#555;
-  user-select:none;font-weight:500;font-family:var(--sans);letter-spacing:.01em;
-  transition:border-color .1s,background .1s,color .1s,transform .08s,box-shadow .1s;
-  line-height:1.2;
+  user-select:none;font-weight:500;font-family:var(--sans);
+  transition: all .1s;
 }
-.chip:hover{border-color:#000;color:#000;background:#f5f5f5;transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,.1);}
-.chip:active{transform:scale(.96);}
-.chip.on{background:#000;border-color:#000;color:#fff;font-weight:600;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.22);}
-.chip.on::before{content:'✓ ';font-weight:900;font-size:10px;}
-.chip:focus-visible{outline:2.5px solid #000;outline-offset:2px;}
-.chip.nt{border-color:#e0e0e0;color:#aaa;font-style:italic;}
-.chip.nt:hover{border-color:#999;color:#555;font-style:normal;}
-.chip.nt.on{background:#666;border-color:#666;font-style:normal;}
-
-/* HGT */
-.hgt-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
-.hgt-tag{
-  background:#f5f5f5;border:1px solid var(--border);border-radius:3px;
-  padding:3px 8px;font-family:var(--mono);font-size:11px;
-  display:flex;align-items:center;gap:5px;
-}
-.hgt-tag .x{cursor:pointer;color:#bbb;font-size:10px;line-height:1;}
-.hgt-tag .x:hover{color:#000;}
-.hgt-tag.low {background:var(--warn-bg);border-color:#e8a44a;color:var(--warn);}
-.hgt-tag.crit{background:var(--err-bg); border-color:#e06077;color:var(--err);}
-.hgt-tag .hgt-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
-
-/* Oximetry delta */
-.oxi-delta{
-  font-family:var(--mono);font-size:11px;padding:5px 9px;
-  border-radius:3px;margin-top:2px;display:none;line-height:1.5;
-}
-.oxi-delta.ok  {display:block;background:var(--ok-bg);  border:1px solid #7cc4a0;color:var(--ok);}
-.oxi-delta.warn{display:block;background:var(--warn-bg);border:1px solid #e8a44a;color:var(--warn);}
-
-/* Peso chart */
-.peso-chart{margin:8px 0 4px;}
-.peso-chart svg{width:100%;height:60px;display:block;}
-
-/* Peso rows */
-.peso-row{display:grid;grid-template-columns:82px 1fr 85px 22px;gap:6px;align-items:center;padding:3px 0;border-bottom:1px solid #f0f0f0;}
-.peso-row:last-child{border:none;}
-.peso-dt{font-family:var(--mono);font-size:11px;color:var(--muted);}
-.peso-pct{font-family:var(--mono);font-size:11px;font-weight:700;text-align:right;}
-.peso-del{cursor:pointer;color:#ccc;font-size:11px;text-align:center;}
-.peso-del:hover{color:#000;}
-
-/* Alerts panel */
-.alert-panel{
-  background:var(--err-bg);border:1.5px solid #e06077;border-radius:3px;
-  padding:8px 11px;font-family:var(--mono);font-size:11px;
-  display:none;margin-bottom:0;
-}
-.alert-panel.has-items{display:block;}
-.alert-panel-title{font-weight:700;color:var(--err);margin-bottom:5px;letter-spacing:.06em;font-size:10px;text-transform:uppercase;}
-.alert-item{color:var(--err);line-height:1.7;padding-left:4px;}
-.alert-item::before{content:'⚠ ';}
-
-.free-text-editor{
-  background:#fff;border:1.5px solid #000;border-radius:4px;overflow:hidden;
-}
-.free-text-editor-head{
-  background:#000;color:#fff;padding:9px 13px;
-  display:flex;align-items:center;gap:9px;
-  cursor:pointer;user-select:none;
-}
-.free-text-editor-title{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
-.free-text-editor-hint{font-family:var(--mono);font-size:9px;color:#999;margin-left:auto;}
-.free-text-editor-body{padding:12px;}
-.free-text-editor-body textarea{
-  width:100%;min-height:140px;resize:vertical;
-  font-family:var(--mono);font-size:12.5px;line-height:1.8;
-  border:1px solid var(--border);border-radius:3px;
-  padding:10px 12px;color:var(--text);background:var(--bg);
-  outline:none;transition:border-color .1s;
-}
-.free-text-editor-body textarea:focus{border-color:#000;border-width:2px;box-shadow:0 0 0 3px rgba(0,0,0,.07);}
-.free-text-editor-body textarea::placeholder{color:#bbb;}
-
-/* BUTTONS */
-.mbtn{
-  background:#fff;border:1.5px solid #000;color:#000;
-  padding:6px 13px;border-radius:3px;cursor:pointer;
-  font-size:11px;font-weight:700;font-family:var(--mono);letter-spacing:.04em;
-  transition:background .12s,color .12s,transform .08s,box-shadow .12s;
-  white-space:nowrap;box-shadow:2px 2px 0 #000;
-}
-.mbtn:hover{background:#000;color:#fff;box-shadow:3px 3px 0 #555;}
-.mbtn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
-
-/* MISC */
-.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
-.idade-calc{font-family:var(--mono);font-size:11px;color:var(--ok);font-weight:700;padding:4px 0 0;min-height:16px;}
+.chip.on{background:#000;border-color:#000;color:#fff;}
 
 /* PREVIEW */
 .preview{
@@ -243,164 +100,22 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
   display:flex;flex-direction:column;
   position:sticky;top:44px;height:calc(100vh - 44px);
 }
-.prev-head{
-  padding:9px 14px;display:flex;align-items:center;justify-content:space-between;
-  background:#000;gap:8px;flex-shrink:0;
-}
-.prev-head-label{
-  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:#fff;font-family:var(--mono);display:flex;align-items:center;gap:8px;flex:1;min-width:0;
-}
-.live-dot{width:6px;height:6px;background:#fff;border-radius:50%;opacity:.25;transition:opacity .12s;flex-shrink:0;}
+.prev-head{padding:9px 14px;background:#000;color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;}
+.prev-tabs{display:flex;border-bottom:2px solid #000;background:#f5f5f5;}
+.prev-tab{flex:1;padding:7px 0;text-align:center;cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);}
+.prev-tab.active{color:#000;border-bottom:2px solid #000;background:#fff;}
+.prev-doc{flex:1;overflow-y:auto;padding:16px 20px;font-family:var(--mono);font-size:12px;line-height:1.7;}
 
-/* TABS */
-.prev-tabs{display:flex;border-bottom:2px solid #000;background:#f5f5f5;flex-shrink:0;}
-.prev-tab{
-  flex:1;padding:7px 0;text-align:center;cursor:pointer;
-  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.07em;
-  text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;
-  transition:color .15s,border-color .15s;
-}
-.prev-tab:hover{color:#000;}
-.prev-tab.active{color:#000;border-bottom-color:#000;background:#fff;}
-.prev-pane{display:none;flex:1;overflow-y:auto;}
-.prev-pane.active{display:flex;flex-direction:column;}
-
-/* Edit mode */
-.btn-edit{
-  background:transparent;border:1.5px solid #555;color:#ccc;
-  padding:4px 11px;border-radius:3px;cursor:pointer;
-  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.05em;
-  transition:all .15s;white-space:nowrap;flex-shrink:0;
-}
-.btn-edit:hover{border-color:#fff;color:#fff;}
-.btn-edit.active{background:#fff;color:#000;border-color:#fff;}
-.prev-edit-bar{
-  display:none;align-items:center;gap:6px;
-  padding:6px 12px;border-top:1px solid #e0e0e0;
-  background:#f5f5f5;flex-shrink:0;
-}
-.prev-edit-bar.active{display:flex;}
-.prev-edit-bar-hint{font-family:var(--mono);font-size:9px;color:#999;flex:1;}
-.btn-regen{
-  background:#fff;border:1.5px solid #000;color:#000;
-  padding:4px 10px;border-radius:3px;cursor:pointer;
-  font-family:var(--mono);font-size:10px;font-weight:700;
-  transition:background .12s,color .12s;white-space:nowrap;
-}
-.btn-regen:hover{background:#000;color:#fff;}
-.prev-textarea{
-  display:none;flex:1;resize:none;border:none;outline:none;
-  font-family:var(--mono);font-size:12px;line-height:1.8;
-  color:var(--text);background:#fafaf8;
-  padding:16px 20px;
-  border-top:2px solid #000;
-}
-.prev-textarea.active{display:block;}
-
-/* DOCUMENT VIEWER */
-
-.prev-doc{
-  flex:1;overflow-y:auto;
-  padding:16px 20px 32px;
-  font-family:var(--mono);font-size:12px;
-  color:var(--text);
-  outline:none;
-  caret-color:#000;
-}
-
-.prev-empty{
-  color:var(--muted);font-size:11px;padding:32px 0;text-align:center;
-  letter-spacing:.05em;
-}
-
-/* Plain lines */
-.pv-line{line-height:1.75;word-break:break-word;padding:0;}
-.pv-spacer{height:8px;}
-
-/* # section headers */
-.pv-hash{
-  line-height:1.7;word-break:break-word;
-  margin-top:2px;
-}
-.pv-tag{font-weight:700;color:#000;}
-
-/* Subsystem lines: ACV: AR: ABD: */
-.pv-sys{
-  line-height:1.75;padding-left:0;word-break:break-word;
-}
-.pv-sys-lbl{font-weight:700;color:#333;}
-.pv-num{font-weight:700;color:#000;}
-
-/* CD block */
-.pv-cd-head{
-  font-weight:700;color:#000;
-  margin-top:4px;line-height:1.75;
-}
-.pv-cd-item{
-  padding-left:16px;line-height:1.75;
-  position:relative;
-}
-.pv-cd-item::before{content:'- ';position:absolute;left:0;color:#000;}
-
-/* Diagnostics */
-.pv-diag-item{
-  padding-left:16px;line-height:1.75;
-  position:relative;color:var(--muted);
-}
-.pv-diag-item::before{content:'— ';position:absolute;left:0;color:var(--muted);}
-
-/* Alerts */
-.pv-alert{color:var(--err);font-weight:600;}
-.pv-warn{color:var(--warn);}
-
-/* Notes pane */
-.prev-notes{padding:12px;display:flex;flex-direction:column;gap:8px;}
-.prev-notes textarea{resize:vertical;min-height:200px;font-size:12px;line-height:1.7;background:#fff;}
-.prev-notes-hint{font-size:10px;color:var(--muted);font-family:var(--mono);}
-
-/* Footer */
-.prev-foot{
-  padding:8px 12px;border-top:2px solid #000;display:flex;gap:6px;flex-shrink:0;background:#fff;
-}
+.prev-foot{padding:8px 12px;border-top:2px solid #000;background:#fff;}
 .btn-copy{
   background:#000;color:#fff;border:1.5px solid #000;
-  padding:7px 16px;border-radius:3px;
-  font-family:var(--mono);font-size:11px;font-weight:700;
-  cursor:pointer;letter-spacing:.05em;
-  transition:background .12s,box-shadow .12s,transform .08s;
-  box-shadow:2px 2px 0 #555;white-space:nowrap;
+  padding:8px;border-radius:3px;font-family:var(--mono);font-size:11px;font-weight:700;
+  cursor:pointer;width:100%;box-shadow:2px 2px 0 #555;
 }
-.btn-copy:hover{background:#333;box-shadow:3px 3px 0 #888;}
-.btn-copy:active{transform:translate(1px,1px);}
-.btn-copy.ok{background:#186237;border-color:#186237;}
-.btn-alt{
-  background:#fff;color:#000;border:1.5px solid #000;
-  padding:7px 12px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;
-  font-family:var(--mono);letter-spacing:.04em;
-  transition:background .12s,color .12s,box-shadow .12s,transform .08s;
-  box-shadow:2px 2px 0 #000;white-space:nowrap;
-}
-.btn-alt:hover{background:#000;color:#fff;box-shadow:3px 3px 0 #555;}
-.btn-alt:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
-.btn-stretch{flex:1;}
 
-/* SCROLLBARS */
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px;}
-
-/* RESPONSIVE */
 @media(max-width:880px){
   .layout{grid-template-columns:1fr;height:auto;}
-  .preview{position:static;height:440px;border-left:none;border-top:2px solid #000;}
-}
-@media print{
-  header,.form-panel,#restoreBanner{display:none;}
-  .layout{display:block;}
-  .preview{position:static;height:auto;border:none;}
-  .prev-foot,.prev-tabs{display:none;}
-  .prev-pane{display:block!important;}
+  .preview{height:400px;border-left:none;border-top:2px solid #000;}
 }
 </style>
 </head>
@@ -410,1558 +125,169 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
   <div class="logo">◉ NEOEVOLVE</div>
   <div class="badge">v7</div>
   <div class="spacer"></div>
-  <div class="header-patient" id="hPatient"></div>
   <div class="header-progress">
-    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-    <div class="prog-txt" id="progTxt">0%</div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width: 20%"></div></div>
+    <div class="prog-txt">20%</div>
   </div>
-  <div class="date-txt" id="hDate"></div>
 </header>
 
-<div id="restoreBanner" class="hidden">
-  <span>💾 Rascunho salvo encontrado</span>
-  <button onclick="restoreData()">↩ Restaurar</button>
-  <button onclick="dismissRestore()" style="background:#ccc">Ignorar</button>
-</div>
-
 <div class="layout">
-<div class="form-panel" id="fp">
-
-  <div class="toolbar">
-    <span class="toolbar-label">Seções:</span>
-    <button class="mbtn" onclick="expandAll()"  style="padding:4px 10px;font-size:10px">▾ Expandir tudo</button>
-    <button class="mbtn" onclick="collapseAll()" style="padding:4px 10px;font-size:10px">▸ Recolher tudo</button>
-  </div>
-
-  <!-- ① IDENTIFICAÇÃO -->
-  <div class="sec" id="s-id">
-    <div class="sec-head" onclick="tog('s-id')">
-      <div class="sec-icon">👶</div>
-      <div class="sec-info"><div class="sec-title">Identificação do RN</div><div class="sec-sub">Nascimento, IG e classificação</div></div>
-      <div class="sec-dot" id="dot-s-id"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body">
-      <div class="fld span2">
-        <span class="lbl">Nome / Leito / Prontuário</span>
-        <input type="text" id="nomeRN" placeholder="Filho(a) de... — Leito / Prontuário">
+  <div class="form-panel">
+    
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon">👶</div>
+        <div class="sec-info"><div class="sec-title">Identificação do RN</div><div class="sec-sub">Nascimento, IG e classificação</div></div>
+        <div class="sec-dot filled"></div>
       </div>
-      <div class="fld">
-        <span class="lbl">Data do Nascimento</span>
-        <input type="date" id="dataNasc" oninput="updateIdade()">
-      </div>
-      <div class="fld">
-        <span class="lbl">Hora do Nascimento</span>
-        <input type="time" id="horaNasc" oninput="updateIdade()">
-      </div>
-      <div class="span2"><div class="idade-calc" id="idadeCalc"></div></div>
-      <div class="fld">
-        <span class="lbl">IG <span class="lbl-hint">semanas+dias</span></span>
-        <input type="text" id="ig" placeholder="ex: 38+2">
-      </div>
-      <div class="fld">
-        <span class="lbl">Classif. por IG/Peso</span>
-        <div class="chips" id="cig">
-          <div class="chip" tabindex="0" onclick="pick('cig',this)">AIG</div>
-          <div class="chip" tabindex="0" onclick="pick('cig',this)">GIG</div>
-          <div class="chip" tabindex="0" onclick="pick('cig',this)">PIG</div>
+      <div class="sec-body">
+        <div class="fld span2">
+          <span class="lbl">Nome / Leito / Prontuário</span>
+          <input type="text" placeholder="Filho(a) de... — Leito / Prontuário">
         </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Peso ao Nascer <span class="lbl-hint">gramas</span></span>
-        <input type="number" id="pNasc" placeholder="ex: 3200" min="300" max="7000">
-      </div>
-      <div class="fld">
-        <span class="lbl">Sexo</span>
-        <div class="chips" id="sexo">
-          <div class="chip" tabindex="0" onclick="pick('sexo',this)">FEMININO</div>
-          <div class="chip" tabindex="0" onclick="pick('sexo',this)">MASCULINO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('sexo',this)">INDETERMINADO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Tipo de Parto</span>
-        <div class="chips" id="parto">
-          <div class="chip" tabindex="0" onclick="pick('parto',this)">CESÁREA</div>
-          <div class="chip" tabindex="0" onclick="pick('parto',this)">NORMAL</div>
-          <div class="chip" tabindex="0" onclick="pick('parto',this)">FÓRCEPS</div>
-          <div class="chip" tabindex="0" onclick="pick('parto',this)">VÁCUO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Apresentação</span>
-        <div class="chips" id="apres">
-          <div class="chip" tabindex="0" onclick="pick('apres',this)">CEFÁLICA</div>
-          <div class="chip" tabindex="0" onclick="pick('apres',this)">PÉLVICA</div>
-          <div class="chip" tabindex="0" onclick="pick('apres',this)">CÓRMICA</div>
-        </div>
-      </div>
-      <div class="fld span2">
-        <span class="lbl">APGAR <span class="lbl-hint">0–10 · ≥7 normal · 4–6 intermediário · ≤3 depressão grave</span></span>
-        <div class="apgar-grid">
-          <div class="apgar-score">
-            <label>1 min</label>
-            <input type="number" id="ap1" placeholder="—" min="0" max="10" oninput="styleApgar(this)">
-          </div>
-          <div class="apgar-score">
-            <label>5 min</label>
-            <input type="number" id="ap5" placeholder="—" min="0" max="10" oninput="styleApgar(this)">
-          </div>
-          <div class="apgar-score">
-            <label>10 min</label>
-            <input type="number" id="ap10" placeholder="—" min="0" max="10" oninput="styleApgar(this)">
-          </div>
-        </div>
-      </div>
-      <div class="fld span2">
-        <span class="lbl"><span class="chip-count" id="cc-interNasc"></span>Intercorrências no Parto / Nascimento</span>
-        <div class="chips" id="interNasc">
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">SEM INTERCORRÊNCIAS</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">LÍQUIDO MECONIAL</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">CIRCULAR DE CORDÃO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">REANIMAÇÃO EM SALA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">VPP</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">MASSAGEM CARDÍACA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">ADRENALINA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'interNasc')">SOFRIMENTO FETAL</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Clampeamento do Cordão</span>
-        <div class="chips" id="clamp">
-          <div class="chip" tabindex="0" onclick="pick('clamp',this)">OPORTUNO</div>
-          <div class="chip" tabindex="0" onclick="pick('clamp',this)">IMEDIATO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Primeira Micção</span>
-        <div class="chips" id="miccao">
-          <div class="chip" tabindex="0" onclick="pick('miccao',this)">NA SALA DE PARTO</div>
-          <div class="chip" tabindex="0" onclick="pick('miccao',this)">APÓS NASCIMENTO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('miccao',this)">NÃO REFERIDA</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ② PRÉ-NATAL -->
-  <div class="sec closed" id="s-pre">
-    <div class="sec-head" onclick="tog('s-pre')">
-      <div class="sec-icon">🤰</div>
-      <div class="sec-info"><div class="sec-title">Pré-Natal</div><div class="sec-sub">Acompanhamento gestacional</div></div>
-      <div class="sec-dot" id="dot-s-pre"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body">
-      <div class="fld">
-        <span class="lbl">Realizou Pré-Natal?</span>
-        <div class="chips" id="realizouPN">
-          <div class="chip" tabindex="0" onclick="pick('realizouPN',this)">SIM</div>
-          <div class="chip" tabindex="0" onclick="pick('realizouPN',this)">NÃO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('realizouPN',this)">IGNORADO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Nº de Consultas <span class="lbl-hint">mín. 6 recomendado</span></span>
-        <input type="number" id="nCons" placeholder="ex: 7" min="0" max="30">
-      </div>
-      <div class="fld span2">
-        <span class="lbl"><span class="chip-count" id="cc-iGest"></span>Intercorrências Gestacionais</span>
-        <div class="chips" id="iGest">
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">HAG</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">PRÉ-ECLÂMPSIA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">ECLÂMPSIA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">DM GESTACIONAL</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">ITU</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">AMEAÇA DE PARTO PREMATURO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">RPM</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">CORIOAMNIONITE</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">SÍFILIS</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">COVID-19</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">ZIKA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">OLIGOÂMNIO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">POLIÂMNIO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'iGest')">RCIU</div>
-        </div>
-      </div>
-      <div class="fld span2">
-        <span class="lbl">Observações gestacionais</span>
-        <textarea id="obsGest" placeholder="outras intercorrências ou detalhes relevantes..."></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- ③ DADOS MATERNOS -->
-  <div class="sec closed" id="s-mae">
-    <div class="sec-head" onclick="tog('s-mae')">
-      <div class="sec-icon">🩺</div>
-      <div class="sec-info"><div class="sec-title">Dados Maternos</div><div class="sec-sub">Sorologias e tipagem sanguínea</div></div>
-      <div class="sec-dot" id="dot-s-mae"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body three">
-      <div class="fld">
-        <span class="lbl">Tipo Sanguíneo Mãe</span>
-        <select id="tipoMae">
-          <option value="">—</option>
-          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
-        </select>
-      </div>
-      <div class="fld">
-        <span class="lbl">HIV</span>
-        <div class="chips" id="hiv">
-          <div class="chip" tabindex="0" onclick="pick('hiv',this)">NÃO REAGENTE</div>
-          <div class="chip" tabindex="0" onclick="pick('hiv',this)">REAGENTE</div>
-          <div class="chip nt" tabindex="0" onclick="pick('hiv',this)">N/T</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">VDRL</span>
-        <div class="chips" id="vdrl">
-          <div class="chip" tabindex="0" onclick="pick('vdrl',this)">NÃO REAGENTE</div>
-          <div class="chip" tabindex="0" onclick="pick('vdrl',this)">REAGENTE</div>
-          <div class="chip nt" tabindex="0" onclick="pick('vdrl',this)">N/T</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">HBsAg</span>
-        <div class="chips" id="hbsag">
-          <div class="chip" tabindex="0" onclick="pick('hbsag',this)">NEGATIVO</div>
-          <div class="chip" tabindex="0" onclick="pick('hbsag',this)">POSITIVO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('hbsag',this)">N/T</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Strep. Grupo B</span>
-        <div class="chips" id="strep">
-          <div class="chip" tabindex="0" onclick="pick('strep',this)">NEGATIVO</div>
-          <div class="chip" tabindex="0" onclick="pick('strep',this)">POSITIVO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('strep',this)">N/T</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Toxoplasmose</span>
-        <div class="chips" id="toxo">
-          <div class="chip" tabindex="0" onclick="pick('toxo',this)">IMUNE</div>
-          <div class="chip" tabindex="0" onclick="pick('toxo',this)">SUSCETÍVEL</div>
-          <div class="chip" tabindex="0" onclick="pick('toxo',this)">INF. AGUDA</div>
-          <div class="chip nt" tabindex="0" onclick="pick('toxo',this)">N/T</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ④ DADOS LAB DO RN -->
-  <div class="sec closed" id="s-rn">
-    <div class="sec-head" onclick="tog('s-rn')">
-      <div class="sec-icon">🧬</div>
-      <div class="sec-info"><div class="sec-title">Dados Laboratoriais do RN</div><div class="sec-sub">Tipagem e Coombs direto</div></div>
-      <div class="sec-dot" id="dot-s-rn"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body">
-      <div class="fld">
-        <span class="lbl">Tipo Sanguíneo RN</span>
-        <select id="tipoRN">
-          <option value="">—</option>
-          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
-        </select>
-      </div>
-      <div class="fld">
-        <span class="lbl">Coombs Direto</span>
-        <div class="chips" id="coombs">
-          <div class="chip" tabindex="0" onclick="pick('coombs',this)">NEGATIVO</div>
-          <div class="chip" tabindex="0" onclick="pick('coombs',this)">POSITIVO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('coombs',this)">NÃO COLETADO</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑤ TRIAGEM NEONATAL -->
-  <div class="sec" id="s-tri">
-    <div class="sec-head" onclick="tog('s-tri')">
-      <div class="sec-icon">❤️</div>
-      <div class="sec-info"><div class="sec-title">Triagem Neonatal</div><div class="sec-sub">Testes obrigatórios</div></div>
-      <div class="sec-dot" id="dot-s-tri"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body">
-      <div class="fld span2">
-        <span class="lbl">Reflexo Vermelho (TRV)</span>
-        <div class="chips" id="trv">
-          <div class="chip" tabindex="0" onclick="pick('trv',this)">POSITIVO BILATERAL</div>
-          <div class="chip" tabindex="0" onclick="pick('trv',this)">POSITIVO UNILATERAL D</div>
-          <div class="chip" tabindex="0" onclick="pick('trv',this)">POSITIVO UNILATERAL E</div>
-          <div class="chip" tabindex="0" onclick="pick('trv',this)">NEGATIVO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('trv',this)">NÃO REALIZADO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Oximetria MSD <span class="lbl-hint">%</span></span>
-        <input type="number" id="oxMSD" placeholder="ex: 98" min="50" max="100">
-      </div>
-      <div class="fld">
-        <span class="lbl">Oximetria MID <span class="lbl-hint">%</span></span>
-        <input type="number" id="oxMID" placeholder="ex: 98" min="50" max="100">
-      </div>
-      <div class="span2">
-        <div class="oxi-delta" id="oxiDelta"></div>
-      </div>
-      <div class="fld span2">
-        <span class="lbl">Teste do Coraçãozinho</span>
-        <div class="chips" id="coracao">
-          <div class="chip" tabindex="0" onclick="pick('coracao',this)">APROVADO</div>
-          <div class="chip" tabindex="0" onclick="pick('coracao',this)">FALHOU — REPETIR</div>
-          <div class="chip" tabindex="0" onclick="pick('coracao',this)">FALHOU — ECOCARDIOGRAMA</div>
-          <div class="chip nt" tabindex="0" onclick="pick('coracao',this)">NÃO REALIZADO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Orelhinha (TANU)</span>
-        <div class="chips" id="tanu">
-          <div class="chip" tabindex="0" onclick="pick('tanu',this)">PASSOU</div>
-          <div class="chip" tabindex="0" onclick="pick('tanu',this)">FALHOU</div>
-          <div class="chip nt" tabindex="0" onclick="pick('tanu',this)">PENDENTE ≥48H</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Pezinho</span>
-        <div class="chips" id="pezinho">
-          <div class="chip" tabindex="0" onclick="pick('pezinho',this)">COLETADO</div>
-          <div class="chip nt" tabindex="0" onclick="pick('pezinho',this)">PENDENTE ≥48H</div>
-          <div class="chip" tabindex="0" onclick="pick('pezinho',this)">JÁ COLETADO</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑥ BILIRRUBINAS -->
-  <div class="sec closed" id="s-bili">
-    <div class="sec-head" onclick="tog('s-bili')">
-      <div class="sec-icon">🟡</div>
-      <div class="sec-info"><div class="sec-title">Bilirrubinas</div><div class="sec-sub">Controle de icterícia neonatal</div></div>
-      <div class="sec-dot" id="dot-s-bili"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body">
-      <div class="fld">
-        <span class="lbl">BTc <span class="lbl-hint">mg/dL</span></span>
-        <input type="number" id="btc" placeholder="ex: 11.2" step="0.1" min="0">
-      </div>
-      <div class="fld">
-        <span class="lbl">BT Sérica <span class="lbl-hint">mg/dL</span></span>
-        <input type="number" id="bts" placeholder="ex: 12.4" step="0.1" min="0">
-      </div>
-      <div class="fld">
-        <span class="lbl">BD <span class="lbl-hint">mg/dL — direta</span></span>
-        <input type="number" id="bdi" placeholder="ex: 0.5" step="0.1" min="0">
-      </div>
-      <div class="fld">
-        <span class="lbl">BI <span class="lbl-hint">calculada = BT − BD</span></span>
-        <input type="number" id="bii" placeholder="—" step="0.1" readonly tabindex="-1">
-      </div>
-      <div class="fld span2">
-        <span class="lbl">Zona de Kramer</span>
-        <div class="chips" id="kramer">
-          <div class="chip" tabindex="0" onclick="pick('kramer',this)">I</div>
-          <div class="chip" tabindex="0" onclick="pick('kramer',this)">II</div>
-          <div class="chip" tabindex="0" onclick="pick('kramer',this)">III</div>
-          <div class="chip" tabindex="0" onclick="pick('kramer',this)">IV</div>
-          <div class="chip" tabindex="0" onclick="pick('kramer',this)">V</div>
-        </div>
-      </div>
-      <div class="fld span2">
-        <span class="lbl">Fototerapia</span>
-        <div class="chips" id="foto">
-          <div class="chip" tabindex="0" onclick="pick('foto',this)">SEM FOTOTERAPIA</div>
-          <div class="chip" tabindex="0" onclick="pick('foto',this)">FOTOTERAPIA SIMPLES</div>
-          <div class="chip" tabindex="0" onclick="pick('foto',this)">FOTOTERAPIA DUPLA</div>
-          <div class="chip" tabindex="0" onclick="pick('foto',this)">INICIADA HOJE</div>
-          <div class="chip" tabindex="0" onclick="pick('foto',this)">SUSPENSA HOJE</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑦ ÚLTIMAS HORAS -->
-  <div class="sec" id="s-hor">
-    <div class="sec-head" onclick="tog('s-hor')">
-      <div class="sec-icon">🍼</div>
-      <div class="sec-info"><div class="sec-title">Últimas Horas</div><div class="sec-sub">Alimentação, HGT e eliminações</div></div>
-      <div class="sec-dot" id="dot-s-hor"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body one">
-      <div class="fld">
-        <span class="lbl">Ambiente / Suporte</span>
-        <div class="chips" id="suporte">
-          <div class="chip" tabindex="0" onclick="pick('suporte',this)">SML</div>
-          <div class="chip" tabindex="0" onclick="pick('suporte',this)">BERÇÁRIO</div>
-          <div class="chip" tabindex="0" onclick="pick('suporte',this)">UCI NEONATAL</div>
-          <div class="chip" tabindex="0" onclick="pick('suporte',this)">UTI NEONATAL</div>
-          <div class="chip" tabindex="0" onclick="pick('suporte',this)">MÉTODO CANGURU</div>
-        </div>
-      </div>
-      <div class="g2">
         <div class="fld">
-          <span class="lbl">Aleitamento Materno</span>
-          <div class="chips" id="aleit">
-            <div class="chip" tabindex="0" onclick="pick('aleit',this)">AME — PEGA ADEQUADA</div>
-            <div class="chip" tabindex="0" onclick="pick('aleit',this)">MÃE COM COLOSTRO</div>
-            <div class="chip" tabindex="0" onclick="pick('aleit',this)">DIFICULDADE NA PEGA</div>
-            <div class="chip" tabindex="0" onclick="pick('aleit',this)">SEIOS INGURGITADOS</div>
-            <div class="chip nt" tabindex="0" onclick="pick('aleit',this)">NÃO INICIADO</div>
-            <div class="chip nt" tabindex="0" onclick="pick('aleit',this)">CONTRAINDICADO</div>
+          <span class="lbl">Data do Nascimento</span>
+          <input type="date">
+        </div>
+        <div class="fld">
+          <span class="lbl">Hora do Nascimento</span>
+          <input type="time">
+        </div>
+        <div class="fld">
+          <span class="lbl">IG <span class="lbl-hint">semanas+dias</span></span>
+          <input type="text" placeholder="ex: 38+2">
+        </div>
+        <div class="fld">
+          <span class="lbl">Classif. por IG/Peso</span>
+          <div class="chips">
+            <div class="chip" onclick="this.classList.toggle('on')">AIG</div>
+            <div class="chip" onclick="this.classList.toggle('on')">GIG</div>
+            <div class="chip" onclick="this.classList.toggle('on')">PIG</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon">🤰</div>
+        <div class="sec-info"><div class="sec-title">Pré-Natal</div><div class="sec-sub">Acompanhamento gestacional</div></div>
+        <div class="sec-dot"></div>
+      </div>
+      <div class="sec-body">
+        <div class="fld">
+          <span class="lbl">Realizou Pré-Natal?</span>
+          <div class="chips">
+            <div class="chip" onclick="this.classList.toggle('on')">SIM</div>
+            <div class="chip" onclick="this.classList.toggle('on')">NÃO</div>
           </div>
         </div>
         <div class="fld">
-          <span class="lbl">Fórmula Láctea</span>
-          <div class="chips" id="formula">
-            <div class="chip" tabindex="0" onclick="pick('formula',this)">NÃO FEZ</div>
-            <div class="chip" tabindex="0" onclick="pick('formula',this)">COMPLEMENTO</div>
-            <div class="chip" tabindex="0" onclick="pick('formula',this)">EXCLUSIVA</div>
+          <span class="lbl">Nº de Consultas</span>
+          <input type="number" placeholder="ex: 7">
+        </div>
+        <div class="fld span2">
+          <span class="lbl">Intercorrências</span>
+          <div class="chips">
+            <div class="chip" onclick="this.classList.toggle('on')">HAG</div>
+            <div class="chip" onclick="this.classList.toggle('on')">PRÉ-ECLÂMPSIA</div>
+            <div class="chip" onclick="this.classList.toggle('on')">DM GESTACIONAL</div>
+            <div class="chip" onclick="this.classList.toggle('on')">ITU</div>
           </div>
         </div>
       </div>
-      <div class="fld">
-        <span class="lbl">HGT <span class="lbl-hint">mg/dL · &lt;45 hipoglicemia · &lt;40 grave</span></span>
-        <div class="row">
-          <input type="number" id="hgtIn" placeholder="mg/dL" min="0" max="600" style="max-width:90px" onkeydown="if(event.key==='Enter')aHGT()">
-          <input type="date" id="hgtDt" style="max-width:138px" title="Data da coleta">
-          <input type="time" id="hgtHr" style="max-width:95px" title="Horário da coleta">
-          <button class="mbtn" onclick="aHGT()" style="padding:6px 11px;font-size:10px">+ Add</button>
-          <button class="mbtn" onclick="undoHGT()" style="padding:6px 10px;font-size:10px" id="btnUndoHgt" disabled title="Desfazer último HGT">↩</button>
-        </div>
-        <div class="hgt-list" id="hgtList"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon">🩺</div>
+        <div class="sec-info"><div class="sec-title">Dados Maternos</div><div class="sec-sub">Sorologias e tipagem</div></div>
+        <div class="sec-dot"></div>
       </div>
-      <div class="g2">
+      <div class="sec-body three">
         <div class="fld">
-          <span class="lbl">Diurese</span>
-          <div class="chips" id="diur">
-            <div class="chip" tabindex="0" onclick="pick('diur',this)">PRESENTE</div>
-            <div class="chip" tabindex="0" onclick="pick('diur',this)">REDUZIDA</div>
-            <div class="chip" tabindex="0" onclick="pick('diur',this)">AUSENTE</div>
-          </div>
+          <span class="lbl">Tipo Mãe</span>
+          <select><option value="">—</option><option>O+</option><option>O-</option><option>A+</option><option>A-</option></select>
         </div>
         <div class="fld">
-          <span class="lbl">Evacuações</span>
-          <div class="chips" id="evac">
-            <div class="chip" tabindex="0" onclick="pick('evac',this)">PRESENTE</div>
-            <div class="chip" tabindex="0" onclick="pick('evac',this)">MECONIAL</div>
-            <div class="chip" tabindex="0" onclick="pick('evac',this)">AUSENTE</div>
-          </div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Observações</span>
-        <textarea id="obsHor" placeholder="intercorrências, apneias, desconforto respiratório..."></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑧ PESO EVOLUTIVO -->
-  <div class="sec" id="s-pes">
-    <div class="sec-head" onclick="tog('s-pes')">
-      <div class="sec-icon">⚖️</div>
-      <div class="sec-info"><div class="sec-title">Peso Evolutivo</div><div class="sec-sub">Acompanhamento ponderal diário</div></div>
-      <div class="sec-dot" id="dot-s-pes"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body one">
-      <div id="pesoChart" class="peso-chart" style="display:none"></div>
-      <div id="pesoRows"></div>
-      <div class="row" style="margin-top:8px">
-        <input type="date" id="pesoDt" style="max-width:148px">
-        <input type="number" id="pesoVal" placeholder="gramas" min="200" max="9999" style="max-width:105px">
-        <button class="mbtn" onclick="aPeso()" style="padding:6px 11px;font-size:10px">+ Peso</button>
-        <button class="mbtn" onclick="cPeso()" style="padding:6px 10px;font-size:10px">✕ Limpar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑨ EXAME FÍSICO -->
-  <div class="sec" id="s-exa">
-    <div class="sec-head" onclick="tog('s-exa')">
-      <div class="sec-icon">🔍</div>
-      <div class="sec-info"><div class="sec-title">Exame Físico</div><div class="sec-sub">Sistematizado por sistemas</div></div>
-      <div class="sec-dot" id="dot-s-exa"></div>
-      <div class="sec-arrow">▾</div>
-    </div>
-    <div class="sec-body one">
-      <div class="fld">
-        <span class="lbl">Aspecto Geral — Atividade</span>
-        <div class="chips" id="xAtiv">
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAtiv')">ATIVO E REATIVO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAtiv')">HIPOATIVO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAtiv')">HIPOTÔNICO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAtiv')">IRRITÁVEL</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAtiv')">CONVULSIONANDO</div>
-        </div>
-      </div>
-      <div class="g2">
-        <div class="fld"><span class="lbl">Coloração</span>
-          <div class="chips" id="xCor">
-            <div class="chip" tabindex="0" onclick="pick('xCor',this)">CORADO</div>
-            <div class="chip" tabindex="0" onclick="pick('xCor',this)">HIPOCORADO</div>
-            <div class="chip" tabindex="0" onclick="pick('xCor',this)">PÁLIDO</div>
-          </div>
-        </div>
-        <div class="fld"><span class="lbl">Icterícia</span>
-          <div class="chips" id="xIct">
-            <div class="chip" tabindex="0" onclick="pick('xIct',this)">ANICTÉRICO</div>
-            <div class="chip" tabindex="0" onclick="pick('xIct',this)">ICTÉRICO</div>
-          </div>
-        </div>
-        <div class="fld"><span class="lbl">Hidratação</span>
-          <div class="chips" id="xHid">
-            <div class="chip" tabindex="0" onclick="pick('xHid',this)">HIDRATADO</div>
-            <div class="chip" tabindex="0" onclick="pick('xHid',this)">DESIDRATADO</div>
-          </div>
-        </div>
-        <div class="fld"><span class="lbl">Cianose</span>
-          <div class="chips" id="xCia">
-            <div class="chip" tabindex="0" onclick="pick('xCia',this)">ACIANÓTICO</div>
-            <div class="chip" tabindex="0" onclick="pick('xCia',this)">CIANOSE CENTRAL</div>
-            <div class="chip" tabindex="0" onclick="pick('xCia',this)">CIANOSE PERIFÉRICA</div>
-          </div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Suporte Respiratório</span>
-        <div class="chips" id="xResp">
-          <div class="chip" tabindex="0" onclick="pick('xResp',this)">AR AMBIENTE</div>
-          <div class="chip" tabindex="0" onclick="pick('xResp',this)">O2 CATETER</div>
-          <div class="chip" tabindex="0" onclick="pick('xResp',this)">O2 ÓCULOS</div>
-          <div class="chip" tabindex="0" onclick="pick('xResp',this)">CPAP NASAL</div>
-          <div class="chip" tabindex="0" onclick="pick('xResp',this)">VNI</div>
-          <div class="chip" tabindex="0" onclick="pick('xResp',this)">VM</div>
-        </div>
-      </div>
-
-      <hr class="div">
-
-      <div class="g2">
-        <div class="fld">
-          <span class="lbl">FC <span class="lbl-hint">bpm · normal 100–180</span></span>
-          <input type="number" id="fc" placeholder="ex: 145" min="50" max="280">
+          <span class="lbl">HIV</span>
+          <div class="chips"><div class="chip" onclick="this.classList.toggle('on')">NR</div><div class="chip" onclick="this.classList.toggle('on')">R</div></div>
         </div>
         <div class="fld">
-          <span class="lbl">FR <span class="lbl-hint">irpm · normal 30–60</span></span>
-          <input type="number" id="fr" placeholder="ex: 42" min="0" max="150">
+          <span class="lbl">VDRL</span>
+          <div class="chips"><div class="chip" onclick="this.classList.toggle('on')">NR</div><div class="chip" onclick="this.classList.toggle('on')">R</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon">❤️</div>
+        <div class="sec-info"><div class="sec-title">Triagem Neonatal</div><div class="sec-sub">Testes obrigatórios</div></div>
+        <div class="sec-dot"></div>
+      </div>
+      <div class="sec-body">
+        <div class="fld span2">
+          <span class="lbl">Reflexo Vermelho (TRV)</span>
+          <div class="chips">
+            <div class="chip" onclick="this.classList.toggle('on')">POSITIVO BILATERAL</div>
+            <div class="chip" onclick="this.classList.toggle('on')">NEGATIVO</div>
+          </div>
         </div>
         <div class="fld">
-          <span class="lbl">Temperatura <span class="lbl-hint">°C · normal 36,5–37,5</span></span>
-          <input type="number" id="temp" placeholder="ex: 36.8" step="0.1">
+          <span class="lbl">Ox. MSD (%)</span>
+          <input type="number" placeholder="98">
         </div>
         <div class="fld">
-          <span class="lbl">SatO2 <span class="lbl-hint">% · alvo ≥95</span></span>
-          <input type="number" id="sat" placeholder="ex: 98" min="50" max="100">
+          <span class="lbl">Ox. MID (%)</span>
+          <input type="number" placeholder="98">
         </div>
-      </div>
-
-      <div class="fld">
-        <span class="lbl">ACV</span>
-        <div class="chips" id="xAcv">
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAcv')">RCR 2T, BNF, SEM SOPROS</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAcv')">SOPRO SISTÓLICO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAcv')">SOPRO DIASTÓLICO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAcv')">TAQUICÁRDICO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAcv')">BRADICÁRDICO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">AR</span>
-        <div class="chips" id="xAr">
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAr')">MVUA S/ RA, S/ ESFORÇO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAr')">ESFORÇO RESPIRATÓRIO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAr')">TIRAGEM SUBCOSTAL</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAr')">GEMÊNCIA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAr')">ESTRIDOR</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAr')">CREPITAÇÕES</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'xAr')">SIBILOS</div>
-        </div>
-      </div>
-
-      <hr class="div">
-
-      <div class="g2">
-        <div class="fld"><span class="lbl">Fontanela Anterior</span>
-          <div class="chips" id="xFA">
-            <div class="chip nt" tabindex="0" onclick="pick('xFA',this)">FECHADA</div>
-            <div class="chip" tabindex="0" onclick="pick('xFA',this)">NORMOTENSA</div>
-            <div class="chip" tabindex="0" onclick="pick('xFA',this)">ABAULADA</div>
-            <div class="chip" tabindex="0" onclick="pick('xFA',this)">DEPRIMIDA</div>
+        <div class="fld span2">
+          <span class="lbl">Teste do Coraçãozinho</span>
+          <div class="chips">
+            <div class="chip" onclick="this.classList.toggle('on')">APROVADO</div>
+            <div class="chip" onclick="this.classList.toggle('on')">FALHOU</div>
           </div>
         </div>
-        <div class="fld"><span class="lbl">Reflexos Primitivos</span>
-          <div class="chips" id="xRefl">
-            <div class="chip" tabindex="0" onclick="pick('xRefl',this)">PRESENTES</div>
-            <div class="chip" tabindex="0" onclick="pick('xRefl',this)">AUSENTES</div>
-            <div class="chip" tabindex="0" onclick="pick('xRefl',this)">ASSIMÉTRICOS</div>
+        <div class="fld">
+          <span class="lbl">Orelhinha (TANU)</span>
+          <div class="chips">
+            <div class="chip" onclick="this.classList.toggle('on')">PASSOU</div>
+            <div class="chip" onclick="this.classList.toggle('on')">FALHOU</div>
           </div>
         </div>
-        <div class="fld"><span class="lbl">Abdômen</span>
-          <div class="chips" id="xAbd">
-            <div class="chip" tabindex="0" onclick="pick('xAbd',this)">FLÁCIDO, S/ VISCEROMEGALIAS</div>
-            <div class="chip" tabindex="0" onclick="pick('xAbd',this)">DISTENDIDO</div>
-            <div class="chip" tabindex="0" onclick="pick('xAbd',this)">HEPATOMEGALIA</div>
-            <div class="chip" tabindex="0" onclick="pick('xAbd',this)">ESPLENOMEGALIA</div>
-          </div>
-        </div>
-        <div class="fld"><span class="lbl">Coto Umbilical</span>
-          <div class="chips" id="xCoto">
-            <div class="chip" tabindex="0" onclick="pick('xCoto',this)">MUMIFICADO</div>
-            <div class="chip" tabindex="0" onclick="pick('xCoto',this)">ÚMIDO</div>
-            <div class="chip" tabindex="0" onclick="pick('xCoto',this)">SANGRAMENTO</div>
-            <div class="chip" tabindex="0" onclick="pick('xCoto',this)">ONFALITE</div>
-            <div class="chip" tabindex="0" onclick="pick('xCoto',this)">CAÍDO</div>
+        <div class="fld">
+          <span class="lbl">Linguinha</span>
+          <div class="chips">
+            <div class="chip" onclick="this.classList.toggle('on')">SEM ALTERAÇÃO</div>
+            <div class="chip" onclick="this.classList.toggle('on')">ALTERADO</div>
           </div>
         </div>
       </div>
-      <div class="fld">
-        <span class="lbl">Observações do Exame</span>
-        <textarea id="obsExa" placeholder="achados relevantes, malformações, genitália..."></textarea>
-      </div>
     </div>
+
   </div>
 
-  <!-- ⑩ IMPRESSÃO DIAGNÓSTICA -->
-  <div class="sec" id="s-imp">
-    <div class="sec-head" onclick="tog('s-imp')">
-      <div class="sec-icon">🔬</div>
-      <div class="sec-info"><div class="sec-title">Impressão Diagnóstica</div><div class="sec-sub">Condição geral e hipóteses diagnósticas</div></div>
-      <div class="sec-dot" id="dot-s-imp"></div>
-      <div class="sec-arrow">▾</div>
+  <div class="preview">
+    <div class="prev-head">PREVISUALIZAÇÃO DA EVOLUÇÃO</div>
+    <div class="prev-tabs">
+      <div class="prev-tab active">Texto Estruturado</div>
     </div>
-    <div class="sec-body one">
-      <div class="fld">
-        <span class="lbl">Condição Geral</span>
-        <div class="chips" id="cg">
-          <div class="chip" tabindex="0" onclick="pick('cg',this)">BEG</div>
-          <div class="chip" tabindex="0" onclick="pick('cg',this)">MEG</div>
-          <div class="chip" tabindex="0" onclick="pick('cg',this)">GEG</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl"><span class="chip-count" id="cc-diag"></span>Diagnósticos</span>
-        <div class="chips" id="diag">
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">RN A TERMO SAUDÁVEL</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">ICTERÍCIA NEONATAL</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">HIPOGLICEMIA NEONATAL</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">SEPSE NEONATAL PRECOCE</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">SEPSE NEONATAL TARDIA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">TAQUIPNEIA TRANSITÓRIA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">DESCONFORTO RESPIRATÓRIO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">DOENÇA MEMBRANA HIALINA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">SAM</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">HPPN</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">EHI</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">SÍFILIS CONGÊNITA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">HIV EXPOSTA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">DHN</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">RN PREMATURO TARDIO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'diag')">RN MUITO PREMATURO</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Comentário diagnóstico <span class="lbl-hint">opcional</span></span>
-        <textarea id="obsImp" rows="2" placeholder="hipóteses, raciocínio clínico, evolução do quadro..."></textarea>
-      </div>
+    <div class="prev-doc">
+      <div class="pv-line"><strong># IDENTIFICAÇÃO</strong></div>
+      <div class="pv-line">RN de [Nome], IG: [38+2] semanas.</div>
+      <div class="pv-spacer" style="height:10px"></div>
+      <div class="pv-line"><strong># EXAME FÍSICO</strong></div>
+      <div class="pv-line">Ativo e reativo, corado, hidratado.</div>
+      <div class="pv-line">ACV: RCR em 2T, bulhas normofonéticas.</div>
+      <div class="pv-line">AR: MV presente sem ruídos adventícios.</div>
+      <div class="pv-line">ABD: Globoso, indolor, ruídos hidroaéreos presentes.</div>
     </div>
-  </div>
-
-  <!-- ⑪ CONDUTA -->
-  <div class="sec" id="s-cond">
-    <div class="sec-head" onclick="tog('s-cond')">
-      <div class="sec-icon">📋</div>
-      <div class="sec-info"><div class="sec-title">Conduta</div><div class="sec-sub">Plano terapêutico e orientações</div></div>
-      <div class="sec-dot" id="dot-s-cond"></div>
-      <div class="sec-arrow">▾</div>
+    <div class="prev-foot">
+      <button class="btn-copy">COPIAR PARA O PRONTUÁRIO</button>
     </div>
-    <div class="sec-body one">
-      <div class="fld">
-        <span class="lbl"><span class="chip-count" id="cc-cond"></span>Condutas</span>
-        <div class="chips" id="cond">
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">ALTA HOSPITALAR</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">AVALIAR ALTA ÀS 18H</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">FOTOTERAPIA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">SOLICITAR BILIRRUBINAS</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">CONTROLE HGT</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">HIDRATAÇÃO VENOSA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">ANTIBIOTICOTERAPIA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">HEMOCULTURA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">HEMOGRAMA + PCR</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">RX TÓRAX</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">USG CRANIANA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">ECOCARDIOGRAMA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">INCUBADORA</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">APOIO AO ALEITAMENTO</div>
-          <div class="chip" tabindex="0" onclick="tog2(this,'cond')">FISIOTERAPIA NEONATAL</div>
-        </div>
-      </div>
-      <div class="fld">
-        <span class="lbl">Plano / Observações</span>
-        <textarea id="plano" rows="4" placeholder="condutas específicas, posologia, orientações..."></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- ✏️ TEXTO LIVRE -->
-  <div class="free-text-editor" id="s-livre">
-    <div class="free-text-editor-head" onclick="togLivre()">
-      <div class="sec-icon">✏️</div>
-      <div class="free-text-editor-title">Texto Livre</div>
-      <div class="free-text-editor-hint" id="livreHint">clique para expandir</div>
-      <div class="sec-arrow" id="livreArrow">▾</div>
-    </div>
-    <div class="free-text-editor-body" id="livreBody">
-      <textarea id="textoLivre" placeholder="Escreva livremente — o texto será inserido na saída exatamente como digitado..."></textarea>
-    </div>
-  </div>
-
-</div><!-- /form-panel -->
-
-<!-- PREVIEW -->
-<div class="preview">
-  <div class="prev-head">
-    <div class="prev-head-label">
-      Prévia da Evolução
-      <span class="live-dot" id="dot"></span>
-    </div>
-    <button class="btn-edit" id="btnEdit" onclick="toggleEditMode()" title="Editar texto diretamente">✏️ Editar</button>
-    <button class="btn-copy" id="btnCopy" onclick="doCopy()">📋 Copiar</button>
-  </div>
-
-  <!-- Alert panel -->
-  <div class="alert-panel" id="alertPanel">
-    <div class="alert-panel-title">🚨 Alertas Ativos</div>
-    <div id="alertItems"></div>
-  </div>
-
-  <div class="prev-tabs">
-    <div class="prev-tab active" id="tab-prev" onclick="switchTab('prev')">Evolução</div>
-    <div class="prev-tab" id="tab-notes" onclick="switchTab('notes')">Notas</div>
-  </div>
-
-  <div class="prev-pane active" id="pane-prev">
-    <div class="prev-doc" id="prevDoc"></div>
-    <textarea class="prev-textarea" id="prevTextarea" spellcheck="false" placeholder="Edite a evolução livremente..."></textarea>
-    <div class="prev-edit-bar" id="editBar">
-      <span class="prev-edit-bar-hint">✏️ Editando livremente</span>
-      <button class="btn-regen" onclick="regenEditTxt()">↻ Atualizar do formulário</button>
-    </div>
-  </div>
-  <div class="prev-pane" id="pane-notes">
-    <div class="prev-notes">
-      <p class="prev-notes-hint">Notas privadas — não incluídas no texto exportado.</p>
-      <textarea id="notesPriv" placeholder="Anotações pessoais, lembretes, planos adicionais..." style="min-height:280px;font-size:12px;line-height:1.7;"></textarea>
-    </div>
-  </div>
-
-  <div class="prev-foot">
-    <button class="btn-alt" onclick="doClr()">🗑 Limpar</button>
-    <button class="btn-alt" onclick="window.print()" style="padding:7px 10px">🖨️</button>
-    <button class="btn-alt btn-stretch" onclick="doSave()">💾 Salvar .txt</button>
   </div>
 </div>
-</div><!-- /layout -->
 
-<script>
-'use strict';
-
-// ─── State ────────────────────────────────────────────────────────
-let hgts       = [];
-let pesos      = [];
-let hgtHistory = [];
-let editMode   = false;
-
-// ─── DOM helpers ──────────────────────────────────────────────────
-const $     = id => document.getElementById(id);
-const v     = id => { const e = $(id); return e ? e.value.trim() : ''; };
-const chips = g  => Array.from(document.querySelectorAll('#' + g + ' .chip'));
-const sel1  = g  => { const c = chips(g).find(c => c.classList.contains('on')); return c ? c.textContent.trim() : ''; };
-const selN  = g  => chips(g).filter(c => c.classList.contains('on')).map(c => c.textContent.trim());
-
-// ─── Header clock ─────────────────────────────────────────────────
-function updateClock() {
-  $('hDate').textContent = new Date().toLocaleString('pt-BR', {
-    weekday: 'short', day: '2-digit', month: '2-digit',
-    hour: '2-digit', minute: '2-digit'
-  });
-}
-updateClock();
-setInterval(updateClock, 30000);
-
-// ─── Tabs ─────────────────────────────────────────────────────────
-function switchTab(name) {
-  ['prev','notes'].forEach(t => {
-    $('tab-'  + t).classList.toggle('active', t === name);
-    $('pane-' + t).classList.toggle('active', t === name);
-  });
-}
-
-// ─── Edit mode ────────────────────────────────────────────────────
-function toggleEditMode() {
-  editMode = !editMode;
-  const doc = $('prevDoc');
-  const ta  = $('prevTextarea');
-  const btn = $('btnEdit');
-  const bar = $('editBar');
-  const dot = $('dot');
-
-  if (editMode) {
-    if (!ta.dataset.hasEdits) ta.value = gen();
-    doc.style.display = 'none';
-    ta.classList.add('active');
-    bar.classList.add('active');
-    btn.classList.add('active');
-    btn.textContent = '👁 Visualizar';
-    dot.style.opacity = '0';
-    ta.focus();
-    ta.dataset.hasEdits = '1';
-  } else {
-    doc.style.display = '';
-    ta.classList.remove('active');
-    bar.classList.remove('active');
-    btn.classList.remove('active');
-    btn.textContent = '✏️ Editar';
-    dot.style.opacity = '.25';
-    renderFromText(ta.value);
-  }
-}
-
-function regenEditTxt() {
-  const ta = $('prevTextarea');
-  if (ta.dataset.hasEdits && !confirm('Substituir o texto editado pelo gerado automaticamente?')) return;
-  ta.value = gen();
-  ta.dataset.hasEdits = '1';
-  ta.focus();
-}
-
-function activeText() {
-  const ta = $('prevTextarea');
-  if (editMode) return ta.value;
-  if (ta && ta.dataset.hasEdits) return ta.value;
-  return gen();
-}
-
-// ─── Section toggle ───────────────────────────────────────────────
-function tog(id) { $(id).classList.toggle('closed'); }
-function expandAll()   { document.querySelectorAll('.sec').forEach(s => s.classList.remove('closed')); }
-function collapseAll() { document.querySelectorAll('.sec').forEach(s => s.classList.add('closed')); }
-
-// ─── Free-text section toggle ─────────────────────────────────────
-function togLivre() {
-  const body  = $('livreBody');
-  const arrow = $('livreArrow');
-  const hint  = $('livreHint');
-  const open  = body.style.display !== 'none';
-  body.style.display    = open ? 'none' : 'block';
-  arrow.style.transform = open ? 'rotate(-90deg)' : '';
-  hint.textContent      = open ? 'clique para expandir' : '';
-}
-
-// ─── Single-select chip ───────────────────────────────────────────
-function pick(g, el) {
-  const already = el.classList.contains('on');
-  chips(g).forEach(c => c.classList.remove('on'));
-  if (!already) el.classList.add('on');
-  upd();
-}
-
-// ─── Multi-select chip ────────────────────────────────────────────
-function tog2(el, grpId) {
-  const grp      = $(grpId);
-  const all      = Array.from(grp.querySelectorAll('.chip'));
-  const semInter = all.find(c => c.textContent.trim() === 'SEM INTERCORRÊNCIAS');
-
-  el.classList.toggle('on');
-
-  if (semInter) {
-    if (el === semInter && el.classList.contains('on')) {
-      all.forEach(c => { if (c !== semInter) c.classList.remove('on'); });
-    } else if (el !== semInter && el.classList.contains('on')) {
-      semInter.classList.remove('on');
-    }
-  }
-
-  const badge = $('cc-' + grpId);
-  if (badge) {
-    const n = grp.querySelectorAll('.chip.on').length;
-    badge.textContent = n > 0 ? n : '';
-    badge.style.display = n > 0 ? 'inline-flex' : 'none';
-  }
-  upd();
-}
-
-// ─── APGAR coloring ───────────────────────────────────────────────
-function styleApgar(el) {
-  const n = parseInt(el.value);
-  el.classList.remove('s-ok','s-warn','s-err');
-  if (el.value === '') return;
-  if (n >= 7)      el.classList.add('s-ok');
-  else if (n >= 4) el.classList.add('s-warn');
-  else             el.classList.add('s-err');
-}
-
-// ─── Vital sign coloring ──────────────────────────────────────────
-function checkVitals() {
-  const vitals = [
-    { id:'fc',   min:100, max:180 },
-    { id:'fr',   min:30,  max:60  },
-    { id:'temp', min:36.5,max:37.5},
-    { id:'sat',  min:95,  max:100 },
-  ];
-  vitals.forEach(({ id, min, max }) => {
-    const el  = $(id);
-    const val = parseFloat(el.value);
-    el.classList.remove('vital-ok','vital-warn','vital-err');
-    if (!el.value) return;
-    if (val >= min && val <= max) {
-      el.classList.add('vital-ok');
-    } else {
-      const dev = val < min ? (min - val) / min : (val - max) / max;
-      el.classList.add(dev > 0.15 ? 'vital-err' : 'vital-warn');
-    }
-  });
-}
-
-// ─── Oximetry delta ───────────────────────────────────────────────
-function refreshOxi() {
-  const msdVal = v('oxMSD'), midVal = v('oxMID');
-  const el = $('oxiDelta');
-  if (!msdVal || !midVal) { el.className = 'oxi-delta'; el.textContent = ''; return; }
-  const msd = parseInt(msdVal), mid = parseInt(midVal);
-  const delta = Math.abs(msd - mid);
-  const bothOk = msd >= 95 && mid >= 95;
-  if (delta >= 3) {
-    el.className = 'oxi-delta warn';
-    el.textContent = '⚠ Δ=' + delta + '% (MSD–MID) → Repetir em 1h. Se persistir, investigar cardiopatia congênita.';
-  } else {
-    el.className = 'oxi-delta ok';
-    el.textContent = '✓ Δ=' + delta + '%' + (bothOk ? ' · Ambas ≥95% — Teste aprovado.' : ' · Atenção: saturação abaixo de 95%.');
-  }
-}
-
-// ─── BI auto-calculation ──────────────────────────────────────────
-function calcBI() {
-  const btRaw = v('bts') || v('btc');
-  const bdRaw = v('bdi');
-  $('bii').value = (btRaw && bdRaw)
-    ? Math.max(0, parseFloat(btRaw) - parseFloat(bdRaw)).toFixed(1)
-    : '';
-}
-
-// ─── Idade do RN ──────────────────────────────────────────────────
-function calcIdade() {
-  const d = v('dataNasc'), h = v('horaNasc') || '00:00';
-  if (!d) return '';
-  const diff = Date.now() - new Date(d + 'T' + h).getTime();
-  if (diff < 0) return '';
-  const totalH = Math.floor(diff / 3600000);
-  const dias   = Math.floor(totalH / 24);
-  const hs     = totalH % 24;
-  if (dias === 0) return totalH + 'H DE VIDA';
-  if (dias === 1) return dias + 'D E ' + hs + 'H DE VIDA';
-  return dias + 'D DE VIDA';
-}
-
-function updateIdade() {
-  const id = calcIdade();
-  $('idadeCalc').textContent = id ? '↳ ' + id : '';
-}
-
-// ─── Section dots + progress ──────────────────────────────────────
-function updateMeta() {
-  const totalSecs = document.querySelectorAll('.sec[id]').length;
-  let filled = 0;
-  document.querySelectorAll('.sec[id]').forEach(sec => {
-    const dot = $('dot-' + sec.id);
-    let has = false;
-    if (sec.id === 's-pes') {
-      has = pesos.length > 0;
-    } else {
-      if (sec.id === 's-hor' && hgts.length) has = true;
-      if (!has) {
-        sec.querySelectorAll('input:not([readonly]):not([type=button]),textarea,select').forEach(e => {
-          if (e.value.trim()) has = true;
-        });
-      }
-      if (!has && sec.querySelector('.chip.on')) has = true;
-    }
-    if (dot) dot.classList.toggle('filled', has);
-    if (has) filled++;
-  });
-
-  const pct = Math.round(filled / totalSecs * 100);
-  $('progFill').style.width = pct + '%';
-  $('progTxt').textContent  = pct + '%';
-
-  const nome = v('nomeRN');
-  const id   = calcIdade();
-  const parts = [nome, id].filter(Boolean);
-  const hp = $('hPatient');
-  hp.textContent = parts.join(' · ') || '';
-  hp.classList.toggle('filled', parts.length > 0);
-}
-
-// ─── Alert panel ──────────────────────────────────────────────────
-function updateAlerts() {
-  const alerts = [];
-
-  hgts.forEach(h => {
-    if (h.g < 40) alerts.push('HGT ' + h.g + ' mg/dL — HIPOGLICEMIA GRAVE');
-    else if (h.g < 45) alerts.push('HGT ' + h.g + ' mg/dL — Hipoglicemia');
-  });
-
-  const msdVal = v('oxMSD'), midVal = v('oxMID');
-  if (msdVal && midVal) {
-    const delta = Math.abs(parseInt(msdVal) - parseInt(midVal));
-    if (delta >= 3) alerts.push('Δ Oximetria = ' + delta + '% — Investigar cardiopatia congênita');
-    if (parseInt(msdVal) < 95) alerts.push('Oximetria MSD baixa: ' + msdVal + '%');
-    if (parseInt(midVal) < 95) alerts.push('Oximetria MID baixa: ' + midVal + '%');
-  }
-
-  const fcVal = parseFloat(v('fc')), frVal = parseFloat(v('fr'));
-  const tVal  = parseFloat(v('temp')), satVal = parseFloat(v('sat'));
-  if (v('fc')   && (fcVal < 100 || fcVal > 180)) alerts.push('FC fora do normal: ' + fcVal + ' bpm');
-  if (v('fr')   && (frVal < 30  || frVal > 60))  alerts.push('FR fora do normal: ' + frVal + ' irpm');
-  if (v('temp') && (tVal  < 36.5|| tVal  > 37.5))alerts.push('Temperatura fora do normal: ' + tVal + '°C');
-  if (v('sat')  && satVal < 95)                   alerts.push('SatO2 abaixo do alvo: ' + satVal + '%');
-
-  const base = parseInt(v('pNasc'), 10);
-  if (base) {
-    pesos.forEach(p => {
-      const d = (p.g - base) / base * 100;
-      if (d < -10) alerts.push('Peso ' + p.dt.split('-').reverse().join('/') + ': perda de ' + Math.abs(d).toFixed(1) + '%');
-    });
-  }
-
-  const nc = parseInt(v('nCons'), 10);
-  if (!isNaN(nc) && nc < 6) alerts.push('Pré-natal com apenas ' + nc + ' consulta(s) — abaixo do mínimo');
-
-  const a5 = parseInt(v('ap5'));
-  if (v('ap5') && a5 < 7) alerts.push('Apgar 5\' = ' + a5 + (a5 < 4 ? ' — DEPRESSÃO GRAVE' : ' — Intermediário'));
-
-  const panel = $('alertPanel');
-  const items = $('alertItems');
-  if (alerts.length) {
-    items.innerHTML = alerts.map(a => '<div class="alert-item">' + a + '</div>').join('');
-    panel.classList.add('has-items');
-  } else {
-    items.innerHTML = '';
-    panel.classList.remove('has-items');
-  }
-}
-
-// ─── HGT ──────────────────────────────────────────────────────────
-function aHGT() {
-  const val = v('hgtIn'), hr = v('hgtHr'), dt = v('hgtDt');
-  if (!val) return;
-  const g = parseInt(val);
-  if (isNaN(g) || g <= 0) return;
-  hgtHistory.push(JSON.parse(JSON.stringify(hgts)));
-  hgts.push({ g, hr, dt });
-  $('hgtIn').value = ''; $('hgtHr').value = ''; $('hgtDt').value = '';
-  renderHGT(); upd();
-}
-function removeHGT(i) {
-  hgtHistory.push(JSON.parse(JSON.stringify(hgts)));
-  hgts.splice(i, 1); renderHGT(); upd();
-}
-function undoHGT() {
-  if (!hgtHistory.length) return;
-  hgts = hgtHistory.pop();
-  renderHGT(); upd();
-}
-function renderHGT() {
-  $('hgtList').innerHTML = hgts.map((h, i) => {
-    const cls   = h.g < 40 ? 'crit' : h.g < 45 ? 'low' : '';
-    const lbl   = h.g < 40 ? '⚠ GRAVE' : h.g < 45 ? '↓ HIPO' : '';
-    const timeParts = [];
-    if (h.dt) timeParts.push(h.dt.split('-').reverse().join('/'));
-    if (h.hr) timeParts.push(h.hr);
-    const time  = timeParts.length ? ' <span style="opacity:.7">[' + timeParts.join(' ') + ']</span>' : '';
-    const badge = lbl ? ' <span class="hgt-label">' + lbl + '</span>' : '';
-    return `<div class="hgt-tag ${cls}">${h.g} mg/dL${time}${badge}<span class="x" onclick="removeHGT(${i})">✕</span></div>`;
-  }).join('');
-  $('btnUndoHgt').disabled = (hgtHistory.length === 0);
-}
-
-// ─── Peso evolutivo ───────────────────────────────────────────────
-function aPeso() {
-  const dt = v('pesoDt'), g = parseInt(v('pesoVal'), 10);
-  if (!dt || isNaN(g) || g <= 0) return;
-  pesos.push({ dt, g });
-  pesos.sort((a, b) => a.dt.localeCompare(b.dt));
-  $('pesoDt').valueAsDate = new Date();
-  $('pesoVal').value = '';
-  renderPeso(); upd();
-}
-function cPeso()       { pesos = []; renderPeso(); upd(); }
-function ePeso(i, val) { pesos[i].g = parseInt(val, 10) || 0; renderPeso(); upd(); }
-function removePeso(i) { pesos.splice(i, 1); renderPeso(); upd(); }
-function renderPeso() {
-  const el   = $('pesoRows');
-  const base = parseInt(v('pNasc'), 10);
-
-  const chart = $('pesoChart');
-  if (pesos.length >= 2) {
-    const vals = pesos.map(p => p.g);
-    const minV = Math.min(...vals), maxV = Math.max(...vals, base || 0);
-    const padded = Math.max(maxV - minV, 100);
-    const W = 340, H = 55, PAD = 8;
-    const toX = i => PAD + i * (W - PAD * 2) / (pesos.length - 1 || 1);
-    const toY = g => H - PAD - (g - (minV - 50)) / (padded + 100) * (H - PAD * 2);
-    const pts = pesos.map((p, i) => toX(i) + ',' + toY(p.g)).join(' ');
-    let baseLine = '';
-    if (base && !isNaN(base)) {
-      const by = toY(base);
-      baseLine = `<line x1="${PAD}" y1="${by}" x2="${W-PAD}" y2="${by}" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3"/>`;
-    }
-    const dotsSVG = pesos.map((p, i) => {
-      const d = base ? (p.g - base) / base * 100 : 0;
-      const col = d < -10 ? '#e06077' : d < -7 ? '#e8a44a' : d < -3 ? '#c4b000' : '#186237';
-      return `<circle cx="${toX(i)}" cy="${toY(p.g)}" r="3.5" fill="${col}" stroke="#fff" stroke-width="1.5"/>`;
-    }).join('');
-    chart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${baseLine}<polyline points="${pts}" fill="none" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>${dotsSVG}</svg>`;
-    chart.style.display = 'block';
-  } else {
-    chart.style.display = 'none';
-  }
-
-  if (!pesos.length) {
-    el.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:4px 0">Nenhum peso cadastrado.</div>';
-    return;
-  }
-  el.innerHTML = pesos.map((p, i) => {
-    let pct = '', color = 'var(--muted)';
-    if (base && !isNaN(base)) {
-      const d = (p.g - base) / base * 100;
-      pct   = (d >= 0 ? '+' : '') + d.toFixed(1) + '%';
-      color = d < -10 ? '#b00020' : d < -7 ? '#9a4b00' : d < -3 ? '#7a6500' : '#186237';
-    }
-    const lbl = p.dt.split('-').reverse().join('/');
-    return `<div class="peso-row">
-      <span class="peso-dt">${lbl}</span>
-      <input type="number" value="${p.g}" style="max-width:100px" onchange="ePeso(${i},this.value)"> g
-      <span class="peso-pct" style="color:${color}">${pct}</span>
-      <span class="peso-del" onclick="removePeso(${i})" title="Remover">✕</span>
-    </div>`;
-  }).join('');
-}
-
-// ─── Text generation ──────────────────────────────────────────────
-const brDt = iso => iso ? iso.split('-').reverse().join('/') : '';
-
-function gen() {
-  const lines = [];
-  const add = s => { if (s !== null && s !== undefined && s !== '') lines.push(s); };
-
-  const nome = v('nomeRN');
-  if (nome) add(nome.toUpperCase());
-
-  const fc = v('fc'), fr = v('fr'), tp = v('temp'), sat = v('sat');
-
-  const id = calcIdade();
-  const dn = brDt(v('dataNasc')), hn = v('horaNasc');
-  if (id || dn) {
-    let s = '#RN';
-    if (id) s += ' COM ' + id;
-    if (dn) s += ' — NASCEU ' + dn + (hn ? ' ÀS ' + hn + 'H' : '');
-    add(s);
-  }
-
-  const partoParts = [];
-  const pt = sel1('parto'); if (pt) partoParts.push(pt);
-  const ig = v('ig');
-  if (ig) {
-    const igW = parseInt(ig);
-    const term = igW >= 37 ? 'AT' : igW >= 34 ? 'PT TARDIO' : 'PT';
-    partoParts.push(term + ' (' + ig + 'S)');
-  }
-  const cig = sel1('cig'), pn = v('pNasc');
-  if (cig || pn) {
-    let s = cig || '';
-    if (pn) s += (s ? ' ' : '') + '(' + pn + 'G)';
-    partoParts.push(s);
-  }
-  const a1 = v('ap1'), a5 = v('ap5'), a10 = v('ap10');
-  if (a1 || a5) {
-    let apStr = 'APGAR ' + (a1||'—') + '/' + (a5||'—') + (a10 ? '/' + a10 : '');
-    if (a5 && parseInt(a5) < 7) apStr += (parseInt(a5) < 4 ? ' ⚠ DEP. GRAVE' : ' ⚠ INTERMEDIÁRIO');
-    partoParts.push(apStr);
-  }
-  const cl = sel1('clamp');
-  if (cl === 'OPORTUNO') partoParts.push('CLAMPEAMENTO OPORTUNO DO CORDÃO');
-  else if (cl) partoParts.push('CLAMPEAMENTO ' + cl);
-  const mic = sel1('miccao');
-  if (mic && mic !== 'NÃO REFERIDA') partoParts.push('1ª MICÇÃO: ' + mic);
-  if (partoParts.length) add('#' + partoParts.join(', ') + '.');
-
-  const iN = selN('interNasc').filter(s => s !== 'SEM INTERCORRÊNCIAS');
-  if (iN.length) add('#' + iN.join(', ') + '.');
-
-  const og = v('obsGest'); if (og) add('#' + og.toUpperCase());
-
-  const nc = v('nCons'), ig2 = selN('iGest');
-  if (nc || ig2.length) {
-    let s = '#PRÉ NATAL';
-    if (nc) {
-      s += ' COM ' + nc + ' CONSULTA' + (parseInt(nc) !== 1 ? 'S' : '');
-      if (parseInt(nc) < 6) s += ' ⚠ ABAIXO DO MÍNIMO';
-    }
-    if (ig2.length) s += ', ' + ig2.join(', ');
-    add(s);
-  }
-
-  const maeParts = [];
-  const tm = v('tipoMae'); if (tm) maeParts.push(tm);
-  const soroMap = { hiv:'HIV', vdrl:'VDRL', hbsag:'HBsAg', strep:'STREP B', toxo:'TOXO' };
-  Object.entries(soroMap).forEach(([id2, lbl]) => {
-    const val2 = sel1(id2); if (val2) maeParts.push(lbl + ' ' + val2);
-  });
-  if (maeParts.length) add('#MÃE: ' + maeParts.join(', '));
-
-  const rnParts = [];
-  const trRN = v('tipoRN'); if (trRN) rnParts.push('TIPO ' + trRN);
-  const co = sel1('coombs'); if (co && co !== 'NÃO COLETADO') rnParts.push('COOMBS ' + co);
-  if (rnParts.length) add('#RN: ' + rnParts.join(', '));
-
-  const triParts = [];
-  const trvV = sel1('trv'); if (trvV) triParts.push('TRV: ' + trvV);
-  const msd = v('oxMSD'), mid2 = v('oxMID');
-  if (msd || mid2) {
-    let oxStr = 'OX: MSD ' + (msd||'—') + '% / MID ' + (mid2||'—') + '%';
-    if (msd && mid2) {
-      const delta = Math.abs(parseInt(msd) - parseInt(mid2));
-      if (delta >= 3) oxStr += ' ⚠ Δ=' + delta + '% INVESTIGAR CCHD';
-    }
-    triParts.push(oxStr);
-  }
-  const cor2 = sel1('coracao'); if (cor2) triParts.push('CORAÇÃOZINHO: ' + cor2);
-  const tan = sel1('tanu'); if (tan) triParts.push('TANU: ' + tan);
-  const pez = sel1('pezinho'); if (pez) triParts.push('PEZINHO: ' + pez);
-  if (triParts.length) add('#TRIAGEM: ' + triParts.join(' | '));
-
-  const bilParts = [];
-  const btcV = v('btc'); if (btcV) bilParts.push('BTc ' + btcV + ' MG/DL');
-  const btsV = v('bts'); if (btsV) bilParts.push('BT ' + btsV + ' MG/DL');
-  const bdiV = v('bdi'); if (bdiV) bilParts.push('BD ' + bdiV + ' MG/DL');
-  const biiV = v('bii'); if (biiV) bilParts.push('BI ' + biiV + ' MG/DL');
-  const krV  = sel1('kramer'); if (krV) bilParts.push('KRAMER ZONA ' + krV);
-  const ftV  = sel1('foto');   if (ftV) bilParts.push(ftV);
-  if (bilParts.length) add('#BILIRRUBINAS: ' + bilParts.join(', '));
-
-  const ultParts = [];
-  const sp = sel1('suporte'); if (sp) ultParts.push('RN EM ' + sp);
-  const al = sel1('aleit');   if (al) ultParts.push(al);
-  const fm = sel1('formula'); if (fm && fm !== 'NÃO FEZ') ultParts.push('FÓRMULA: ' + fm);
-  if (hgts.length) {
-    const hgtStr = hgts.map(h => {
-      const warn = h.g < 40 ? ' ⚠ GRAVE' : h.g < 45 ? ' ↓ HIPO' : '';
-      const dtHr = [h.dt ? h.dt.split('-').reverse().join('/') : '', h.hr].filter(Boolean).join(' ');
-      return h.g + (dtHr ? ' [' + dtHr + ']' : '') + warn;
-    }).join(' / ');
-    ultParts.push('HGT: ' + hgtStr + ' MG/DL');
-  }
-  const di = sel1('diur'), ev = sel1('evac');
-  if (di === 'PRESENTE' && ev === 'PRESENTE') ultParts.push('DIURESE E EVACUAÇÕES OK');
-  else { if (di) ultParts.push('DIURESE ' + di); if (ev) ultParts.push('EVACUAÇÕES ' + ev); }
-  const oh = v('obsHor'); if (oh) ultParts.push(oh.toUpperCase());
-  if (ultParts.length) add('#ÚLTIMAS HORAS: ' + ultParts.join(', ') + '.');
-
-  if (pesos.length) {
-    const base = parseInt(v('pNasc'), 10);
-    pesos.forEach(p => {
-      let s = '#PESO: ' + p.g + 'G';
-      if (base && !isNaN(base)) {
-        const d = (p.g - base) / base * 100;
-        s += ' (' + (d >= 0 ? '+' : '') + d.toFixed(1) + '%)';
-        if (d < -10) s += ' ⚠ PERDA >10%';
-      }
-      s += ' DIA ' + brDt(p.dt);
-      add(s);
-    });
-  }
-
-  const geral = [];
-  const xAN = selN('xAtiv'); xAN.forEach(a => geral.push(a));
-  const xC  = sel1('xCor');  if (xC)  geral.push(xC);
-  const xH2 = sel1('xHid');  if (xH2) geral.push(xH2);
-  const xCi = sel1('xCia');  if (xCi) geral.push(xCi);
-  const xI  = sel1('xIct');  if (xI)  geral.push(xI);
-  const xR  = sel1('xResp'); if (xR)  geral.push('EM ' + xR);
-  const oe  = v('obsExa');
-
-  const xAcvN = selN('xAcv'), xArN = selN('xAr');
-  const xAcv = xAcvN.join(', '), xAr2 = xArN.join(', ');
-  const xAbd = sel1('xAbd'), xCoto = sel1('xCoto');
-  const xFA  = sel1('xFA'),  xRfl  = sel1('xRefl');
-
-  if (geral.length || oe || xAcv || xAr2 || xAbd || xCoto || xFA || xRfl || fc || fr) {
-    add('#AO EXAME:');
-    let geralTxt = geral.join(', ');
-    if (geralTxt) geralTxt += '.';
-    if (oe) geralTxt += (geralTxt ? ' ' : '') + oe.toUpperCase();
-    if (geralTxt) add(geralTxt);
-
-    if (xAcv || fc) {
-      let s = 'ACV: ' + (xAcv || '');
-      if (fc) s += (xAcv ? ' FC: ' : 'FC: ') + fc + ' BPM.';
-      else if (xAcv) s += '.';
-      add(s.trim());
-    }
-    if (xAr2 || fr) {
-      let s = 'AR: ' + (xAr2 || '');
-      if (fr) s += (xAr2 ? ' FR: ' : 'FR: ') + fr + ' IRPM.';
-      else if (xAr2) s += '.';
-      add(s.trim());
-    }
-    if (xAbd || xCoto) {
-      let s = 'ABD: ' + (xAbd || '');
-      if (xCoto) s += (xAbd ? ', COTO ' : 'COTO ') + xCoto;
-      add(s + '.');
-    }
-    if (xFA)  add('FA: ' + xFA + '.');
-    if (xRfl) add('REFLEXOS PRIMITIVOS ' + xRfl + '.');
-  }
-  add('');
-
-  const cg2 = sel1('cg'), dx = selN('diag'), oi = v('obsImp');
-  if (cg2 || dx.length || oi) {
-    add('#IMP: RN EM ' + (cg2 || ''));
-    dx.forEach(d => add('— ' + d));
-    if (oi) add(oi.toUpperCase());
-  }
-
-  const cn = selN('cond'), pl = v('plano');
-  if (cn.length || pl) {
-    add('CD:');
-    cn.forEach(c => add('- ' + c));
-    if (pl) pl.split('\n').forEach(l => l.trim() && add('- ' + l.trim().toUpperCase()));
-  }
-
-  const tl = v('textoLivre');
-  if (tl) tl.split('\n').forEach(l => add(l));
-
-  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
-}
-
-// ─── Preview renderer ─────────────────────────────────────────────
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function renderFromText(txt) {
-  const doc = $('prevDoc');
-  if (!txt || !txt.trim()) {
-    doc.innerHTML = '<div class="prev-empty">Preencha os campos para gerar a evolução.</div>';
-    return;
-  }
-  const html = txt.split('\n').map(line => {
-    const e = esc(line);
-    if (line === '') return '<div class="pv-spacer"></div>';
-    if (line.startsWith('#')) {
-      const isAlert = line.includes('⚠') || line.includes('HIPOGLICEMIA') || line.includes('>10%') || line.includes('DEP. GRAVE') || line.includes('INVESTIGAR');
-      const isWarn  = line.includes('ABAIXO DO MÍNIMO') || line.includes('↓ HIPO') || line.includes('INTERMEDIÁRIO');
-      const cls = isAlert ? ' pv-alert' : isWarn ? ' pv-warn' : '';
-      const tagMatch = line.match(/^(#[A-ZÁÉÍÓÚÃÕÂÊÎÔÛÇ\s/]+:?)/);
-      if (tagMatch) {
-        const tag  = esc(tagMatch[1]);
-        const rest = esc(line.slice(tagMatch[1].length));
-        return `<div class="pv-hash${cls}"><span class="pv-tag">${tag}</span>${rest}</div>`;
-      }
-      return `<div class="pv-hash${cls}">${e}</div>`;
-    }
-    if (line === 'CD:') return '<div class="pv-cd-head">CD:</div>';
-    if (line.startsWith('- ')) return `<div class="pv-cd-item">${esc(line.slice(2))}</div>`;
-    if (line.startsWith('— ')) return `<div class="pv-diag-item">${esc(line.slice(2))}</div>`;
-    const sysMatch = line.match(/^(ACV|AR|ABD|FA|REFLEXOS[^:]*)(:\s*)(.*)/);
-    if (sysMatch) {
-      const lbl  = esc(sysMatch[1]);
-      const rest = esc(sysMatch[3])
-        .replace(/(FC:\s*)(\d+\s*BPM)/gi, '$1<span class="pv-num">$2</span>')
-        .replace(/(FR:\s*)(\d+\s*IRPM)/gi, '$1<span class="pv-num">$2</span>');
-      return `<div class="pv-sys"><span class="pv-sys-lbl">${lbl}:</span> ${rest}</div>`;
-    }
-    if (line.includes('⚠') || line.includes('HIPOGLICEMIA') || line.includes('>10%') || line.includes('DEP. GRAVE'))
-      return `<div class="pv-line pv-alert">${e}</div>`;
-    if (line.includes('↓') || line.includes('ABAIXO'))
-      return `<div class="pv-line pv-warn">${e}</div>`;
-    return `<div class="pv-line">${e}</div>`;
-  }).join('');
-  doc.innerHTML = html;
-}
-
-function renderPreview() {
-  if (editMode) return;
-  if ($('prevTextarea').dataset.hasEdits) return;
-  renderFromText(gen());
-}
-
-// ─── Update ───────────────────────────────────────────────────────
-function upd() {
-  calcBI();
-  checkVitals();
-  refreshOxi();
-  updateMeta();
-  updateAlerts();
-  const dot = $('dot');
-  dot.style.opacity = '1';
-  setTimeout(() => dot.style.opacity = '.25', 160);
-  renderPreview();
-  autoSave();
-}
-
-// ─── Copy ─────────────────────────────────────────────────────────
-async function doCopy() {
-  const txt = activeText(); if (!txt) return;
-  await navigator.clipboard.writeText(txt);
-  const b = $('btnCopy');
-  b.textContent = '✓ Copiado!'; b.classList.add('ok');
-  setTimeout(() => { b.textContent = '📋 Copiar'; b.classList.remove('ok'); }, 1800);
-}
-
-// ─── Save .txt ────────────────────────────────────────────────────
-function doSave() {
-  const txt = activeText(); if (!txt) return;
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain;charset=utf-8' }));
-  a.download = 'evolucao-' + new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') + '.txt';
-  a.click(); URL.revokeObjectURL(a.href);
-}
-
-// ─── Clear all ────────────────────────────────────────────────────
-function doClr() {
-  if (!confirm('Limpar todos os dados do formulário?')) return;
-  document.querySelectorAll('#fp input:not([type=button]):not([type=submit]):not([readonly]),#fp textarea,#fp select')
-    .forEach(e => {
-      e.value = '';
-      e.classList.remove('vital-ok','vital-warn','vital-err','s-ok','s-warn','s-err');
-    });
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
-  document.querySelectorAll('.chip-count').forEach(b => { b.textContent = ''; b.style.display = 'none'; });
-  $('oxiDelta').className = 'oxi-delta'; $('oxiDelta').textContent = '';
-  $('bii').value = '';
-  $('idadeCalc').textContent = '';
-  hgts = []; pesos = []; hgtHistory = [];
-  renderHGT(); renderPeso();
-  $('pesoDt').valueAsDate = new Date();
-  try { localStorage.removeItem('neoevolve_draft'); } catch(e){}
-  if (editMode) toggleEditMode();
-  const ta = $('prevTextarea');
-  ta.value = '';
-  delete ta.dataset.hasEdits;
-  upd();
-}
-
-// ─── Auto-save / restore ──────────────────────────────────────────
-let saveTimer = null;
-function autoSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    try {
-      const state = {
-        fields: {},
-        chips: {},
-        hgts,
-        pesos,
-        notes: v('notesPriv'),
-        ts: Date.now()
-      };
-      document.querySelectorAll('#fp input:not([readonly]):not([type=button]):not([type=submit]),#fp textarea,#fp select,[id=notesPriv]')
-        .forEach(e => { if (e.id) state.fields[e.id] = e.value; });
-      document.querySelectorAll('.chips[id]').forEach(grp => {
-        state.chips[grp.id] = Array.from(grp.querySelectorAll('.chip.on'))
-          .map(c => c.textContent.replace('✓ ', '').trim());
-      });
-      localStorage.setItem('neoevolve_draft', JSON.stringify(state));
-    } catch(e) {}
-  }, 1200);
-}
-
-function restoreData() {
-  try {
-    const raw = localStorage.getItem('neoevolve_draft');
-    if (!raw) return;
-    const state = JSON.parse(raw);
-    Object.entries(state.fields || {}).forEach(([id, val]) => {
-      const el = $(id); if (el) el.value = val;
-    });
-    Object.entries(state.chips || {}).forEach(([grpId, selected]) => {
-      const grp = $(grpId); if (!grp) return;
-      grp.querySelectorAll('.chip').forEach(c => {
-        const txt = c.textContent.replace('✓ ', '').trim();
-        c.classList.toggle('on', selected.includes(txt));
-      });
-    });
-    hgts  = state.hgts  || [];
-    pesos = state.pesos || [];
-    if (state.notes) $('notesPriv').value = state.notes;
-    ['ap1','ap5','ap10'].forEach(id => { const el = $(id); if (el && el.value) styleApgar(el); });
-    renderHGT(); renderPeso();
-    $('pesoDt').valueAsDate = new Date();
-    dismissRestore();
-    upd();
-  } catch(e) {}
-}
-
-function dismissRestore() {
-  $('restoreBanner').classList.add('hidden');
-}
-
-// ─── Init ─────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-
-  document.addEventListener('keydown', e => {
-    const active = document.activeElement;
-    if (!active || !active.classList.contains('chip')) return;
-    const group = active.parentElement;
-    const all   = Array.from(group.querySelectorAll('.chip'));
-    const idx   = all.indexOf(active);
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      e.preventDefault(); all[(idx + 1) % all.length].focus();
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      e.preventDefault(); all[(idx - 1 + all.length) % all.length].focus();
-    } else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault(); active.click();
-    }
-  });
-
-  document.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doCopy(); }
-  });
-
-  $('pNasc').addEventListener('input', () => { renderPeso(); upd(); });
-
-  $('pesoDt').valueAsDate = new Date();
-  $('hgtDt').valueAsDate  = new Date();
-
-  const fp = $('fp');
-  fp.addEventListener('input',  upd);
-  fp.addEventListener('change', upd);
-
-  $('livreBody').style.display    = 'none';
-  $('livreArrow').style.transform = 'rotate(-90deg)';
-
-  try {
-    const raw = localStorage.getItem('neoevolve_draft');
-    if (raw) {
-      const s = JSON.parse(raw);
-      const hasData = Object.values(s.fields || {}).some(v2 => v2);
-      const recent  = (Date.now() - (s.ts || 0)) < 86400000;
-      if (hasData && recent) $('restoreBanner').classList.remove('hidden');
-    }
-  } catch(e) {}
-
-  setInterval(updateIdade, 60000);
-  renderHGT(); renderPeso(); upd();
-});
-
-</script>
 </body>
 </html>
