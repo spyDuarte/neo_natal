@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeoEvolve v7 — Evolução Neonatal (Modo Estendido)</title>
+<title>NeoEvolve v7 — Evolução Neonatal (Corrigido)</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -15,107 +15,133 @@
   --ok: #186237;
   --warn: #9a4b00;
   --err: #b00020;
-  --ok-bg: #edfaf3;
-  --warn-bg: #fff8ee;
-  --err-bg: #fff2f4;
   --mono: "IBM Plex Mono", monospace;
   --sans: "IBM Plex Sans", sans-serif;
-  --accent: #000;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: var(--sans); 
+  font-size: 14px; 
+  line-height: 1.5;
+  overflow-y: auto; /* Garante rolagem */
+}
 
 /* HEADER */
-header{
-  background:#000;color:#fff;
-  padding:0 18px;
-  display:flex;align-items:center;gap:12px;
-  position:sticky;top:0;z-index:100;
-  height:44px;
+header {
+  background: #000; color: #fff;
+  padding: 0 18px;
+  display: flex; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 1000;
+  height: 44px;
 }
-.logo{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;}
-.badge{background:#fff;color:#000;font-size:9px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
-.spacer{flex:1;}
-.header-patient{font-family:var(--mono);font-size:11px;color:#999;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.header-progress{display:flex;align-items:center;gap:7px;flex-shrink:0;}
-.prog-bar{width:80px;height:4px;background:#333;border-radius:2px;overflow:hidden;}
-.prog-fill{height:100%;background:#fff;border-radius:2px;transition:width .4s ease;width:0%;}
-.prog-txt{font-family:var(--mono);font-size:10px;color:#999;min-width:24px;text-align:right;}
+.logo { font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: .08em; }
+.badge { background: #fff; color: #000; font-size: 9px; padding: 2px 7px; border-radius: 2px; font-weight: 700; text-transform: uppercase; }
+.spacer { flex: 1; }
 
-/* LAYOUT */
-.layout{display:grid;grid-template-columns:1fr 390px;height:calc(100vh - 44px);}
+/* LAYOUT PRINCIPAL */
+.layout { 
+  display: grid; 
+  grid-template-columns: 1fr 400px; 
+  min-height: calc(100vh - 44px);
+  max-width: 1600px;
+  margin: 0 auto;
+}
 
-/* FORM PANEL */
-.form-panel{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px;}
+/* PAINEL DE FORMULÁRIO */
+.form-panel { 
+  padding: 20px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+}
 
-/* SECTIONS - SEMPRE ABERTAS */
-.sec{border:1px solid var(--border);border-radius:4px;overflow:hidden; margin-bottom: 5px;}
-.sec-head{
-  padding:9px 12px;display:flex;align-items:center;gap:9px;
-  border-left:4px solid #000;
+/* SEÇÕES */
+.sec { 
+  border: 1px solid var(--border); 
+  border-radius: 6px; 
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.sec-head {
+  padding: 12px 15px; 
+  display: flex; align-items: center; gap: 10px;
+  border-left: 5px solid #000;
   background: #fcfcfc;
+  border-bottom: 1px solid var(--border);
 }
-.sec-icon{font-size:15px;flex-shrink:0;line-height:1;}
-.sec-info{flex:1;min-width:0;}
-.sec-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono);}
-.sec-sub{font-size:10px;color:var(--muted);margin-top:1px;}
-.sec-dot{width:7px;height:7px;border-radius:50%;background:#e0e0e0;border:1.5px solid #ccc;flex-shrink:0;}
-.sec-dot.filled{background:#000;border-color:#000;}
+.sec-title { font-size: 11px; font-weight: 700; font-family: var(--mono); text-transform: uppercase; }
+.sec-sub { font-size: 10px; color: var(--muted); }
 
-.sec-body{padding:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.sec-body.one{grid-template-columns:1fr;}
-.sec-body.three{grid-template-columns:1fr 1fr 1fr;}
-.span2{grid-column:1/-1;}
-
-/* FIELDS */
-.fld{display:flex;flex-direction:column;gap:3px;}
-.lbl{
-  font-size:10px;font-weight:700;color:var(--muted);
-  letter-spacing:.07em;text-transform:uppercase;
-  font-family:var(--mono);display:flex;align-items:center;gap:5px;flex-wrap:wrap;
+.sec-body { 
+  padding: 15px; 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px; 
 }
-.lbl-hint{font-size:9px;font-weight:400;color:#aaa;text-transform:none;letter-spacing:0;font-family:var(--sans);margin-left:auto;}
+.span2 { grid-column: 1 / -1; }
 
-/* INPUTS */
-input[type=text],input[type=number],input[type=time],input[type=date],select,textarea{
-  background:var(--bg);border:1px solid var(--border);border-radius:3px;
-  color:var(--text);font-family:var(--sans);font-size:13px;
-  padding:6px 9px;width:100%;outline:none;
+/* CAMPOS */
+.fld { display: flex; flex-direction: column; gap: 4px; }
+.lbl { font-size: 10px; font-weight: 700; color: var(--muted); font-family: var(--mono); text-transform: uppercase; }
+
+input, select, textarea {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--sans);
+  font-size: 13px;
+  width: 100%;
 }
-input:focus,select:focus,textarea:focus{border-color:#000; border-width: 1px; box-shadow: 0 0 0 2px rgba(0,0,0,0.05);}
+input:focus { border-color: #000; outline: none; box-shadow: 0 0 0 2px rgba(0,0,0,0.05); }
 
 /* CHIPS */
-.chips{display:flex;flex-wrap:wrap;gap:5px;}
-.chip{
-  padding:5px 11px;border-radius:3px;border:1.5px solid #ccc;
-  font-size:11.5px;cursor:pointer;background:#fff;color:#555;
-  user-select:none;font-weight:500;font-family:var(--sans);
-  transition: all .1s;
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.chip {
+  padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px;
+  font-size: 11px; cursor: pointer; transition: 0.2s; background: #fff;
 }
-.chip.on{background:#000;border-color:#000;color:#fff;}
+.chip.on { background: #000; color: #fff; border-color: #000; }
 
-/* PREVIEW */
-.preview{
-  border-left:2px solid #000;background:#fff;
-  display:flex;flex-direction:column;
-  position:sticky;top:44px;height:calc(100vh - 44px);
+/* PAINEL DE PREVISUALIZAÇÃO (STICKY) */
+.preview-container {
+  background: #f5f5f5;
+  border-left: 2px solid #000;
+  position: relative;
 }
-.prev-head{padding:9px 14px;background:#000;color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;}
-.prev-tabs{display:flex;border-bottom:2px solid #000;background:#f5f5f5;}
-.prev-tab{flex:1;padding:7px 0;text-align:center;cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);}
-.prev-tab.active{color:#000;border-bottom:2px solid #000;background:#fff;}
-.prev-doc{flex:1;overflow-y:auto;padding:16px 20px;font-family:var(--mono);font-size:12px;line-height:1.7;}
+.preview-sticky {
+  position: sticky;
+  top: 44px; /* Altura do header */
+  height: calc(100vh - 44px);
+  display: flex;
+  flex-direction: column;
+}
+.prev-head { padding: 12px; background: #000; color: #fff; font-family: var(--mono); font-size: 11px; font-weight: 700; }
+.prev-content { 
+  flex: 1; 
+  padding: 20px; 
+  background: #fff; 
+  overflow-y: auto; 
+  font-family: var(--mono); 
+  font-size: 12px; 
+  white-space: pre-wrap;
+}
+.prev-foot { padding: 15px; background: #eee; border-top: 1px solid #ddd; }
 
-.prev-foot{padding:8px 12px;border-top:2px solid #000;background:#fff;}
-.btn-copy{
-  background:#000;color:#fff;border:1.5px solid #000;
-  padding:8px;border-radius:3px;font-family:var(--mono);font-size:11px;font-weight:700;
-  cursor:pointer;width:100%;box-shadow:2px 2px 0 #555;
+.btn-copy {
+  width: 100%; padding: 12px; background: #000; color: #fff; border: none;
+  font-family: var(--mono); font-weight: 700; cursor: pointer; border-radius: 4px;
 }
 
-@media(max-width:880px){
-  .layout{grid-template-columns:1fr;height:auto;}
-  .preview{height:400px;border-left:none;border-top:2px solid #000;}
+/* AJUSTES RESPONSIVOS */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .preview-container { border-left: none; border-top: 4px solid #000; }
+  .preview-sticky { position: static; height: auto; }
+  .prev-content { min-height: 200px; }
 }
 </style>
 </head>
@@ -123,171 +149,142 @@ input:focus,select:focus,textarea:focus{border-color:#000; border-width: 1px; bo
 
 <header>
   <div class="logo">◉ NEOEVOLVE</div>
-  <div class="badge">v7</div>
+  <div class="badge">v7.1</div>
   <div class="spacer"></div>
-  <div class="header-progress">
-    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width: 20%"></div></div>
-    <div class="prog-txt">20%</div>
-  </div>
 </header>
 
 <div class="layout">
   <div class="form-panel">
     
-    <div class="sec">
+    <section class="sec">
       <div class="sec-head">
-        <div class="sec-icon">👶</div>
-        <div class="sec-info"><div class="sec-title">Identificação do RN</div><div class="sec-sub">Nascimento, IG e classificação</div></div>
-        <div class="sec-dot filled"></div>
+        <span class="sec-icon">👶</span>
+        <div class="sec-info">
+          <div class="sec-title">Identificação do RN</div>
+          <div class="sec-sub">Dados básicos e nascimento</div>
+        </div>
       </div>
       <div class="sec-body">
         <div class="fld span2">
-          <span class="lbl">Nome / Leito / Prontuário</span>
-          <input type="text" placeholder="Filho(a) de... — Leito / Prontuário">
+          <label class="lbl">Nome do Paciente</label>
+          <input type="text" placeholder="Ex: Filho de Maria Silva">
         </div>
         <div class="fld">
-          <span class="lbl">Data do Nascimento</span>
+          <label class="lbl">Data de Nascimento</label>
           <input type="date">
         </div>
         <div class="fld">
-          <span class="lbl">Hora do Nascimento</span>
-          <input type="time">
+          <label class="lbl">IG (Semanas+Dias)</label>
+          <input type="text" placeholder="Ex: 37+4">
         </div>
-        <div class="fld">
-          <span class="lbl">IG <span class="lbl-hint">semanas+dias</span></span>
-          <input type="text" placeholder="ex: 38+2">
-        </div>
-        <div class="fld">
-          <span class="lbl">Classif. por IG/Peso</span>
+        <div class="fld span2">
+          <label class="lbl">Classificação</label>
           <div class="chips">
             <div class="chip" onclick="this.classList.toggle('on')">AIG</div>
-            <div class="chip" onclick="this.classList.toggle('on')">GIG</div>
             <div class="chip" onclick="this.classList.toggle('on')">PIG</div>
+            <div class="chip" onclick="this.classList.toggle('on')">GIG</div>
+            <div class="chip" onclick="this.classList.toggle('on')">PRÉ-TERMO</div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="sec">
+    <section class="sec">
       <div class="sec-head">
-        <div class="sec-icon">🤰</div>
-        <div class="sec-info"><div class="sec-title">Pré-Natal</div><div class="sec-sub">Acompanhamento gestacional</div></div>
-        <div class="sec-dot"></div>
+        <span class="sec-icon">🤰</span>
+        <div class="sec-info">
+          <div class="sec-title">Histórico Pré-Natal</div>
+          <div class="sec-sub">Intercorrências e exames</div>
+        </div>
       </div>
       <div class="sec-body">
         <div class="fld">
-          <span class="lbl">Realizou Pré-Natal?</span>
-          <div class="chips">
-            <div class="chip" onclick="this.classList.toggle('on')">SIM</div>
-            <div class="chip" onclick="this.classList.toggle('on')">NÃO</div>
-          </div>
+          <label class="lbl">Nº Consultas</label>
+          <input type="number" placeholder="0">
         </div>
         <div class="fld">
-          <span class="lbl">Nº de Consultas</span>
-          <input type="number" placeholder="ex: 7">
+          <label class="lbl">Tipo Sanguíneo Mãe</label>
+          <select><option>O+</option><option>A+</option><option>B+</option><option>AB+</option><option>Negativo</option></select>
         </div>
         <div class="fld span2">
-          <span class="lbl">Intercorrências</span>
+          <label class="lbl">Intercorrências Gestacionais</label>
           <div class="chips">
-            <div class="chip" onclick="this.classList.toggle('on')">HAG</div>
-            <div class="chip" onclick="this.classList.toggle('on')">PRÉ-ECLÂMPSIA</div>
-            <div class="chip" onclick="this.classList.toggle('on')">DM GESTACIONAL</div>
-            <div class="chip" onclick="this.classList.toggle('on')">ITU</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Diabetes Gestacional</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Hipertensão</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Infecção Urinária</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Sífilis</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Ruptura de Membranas</div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="sec">
+    <section class="sec">
       <div class="sec-head">
-        <div class="sec-icon">🩺</div>
-        <div class="sec-info"><div class="sec-title">Dados Maternos</div><div class="sec-sub">Sorologias e tipagem</div></div>
-        <div class="sec-dot"></div>
-      </div>
-      <div class="sec-body three">
-        <div class="fld">
-          <span class="lbl">Tipo Mãe</span>
-          <select><option value="">—</option><option>O+</option><option>O-</option><option>A+</option><option>A-</option></select>
+        <span class="sec-icon">🧬</span>
+        <div class="sec-info">
+          <div class="sec-title">Exame Físico e Triagem</div>
+          <div class="sec-sub">Dados clínicos atuais</div>
         </div>
-        <div class="fld">
-          <span class="lbl">HIV</span>
-          <div class="chips"><div class="chip" onclick="this.classList.toggle('on')">NR</div><div class="chip" onclick="this.classList.toggle('on')">R</div></div>
-        </div>
-        <div class="fld">
-          <span class="lbl">VDRL</span>
-          <div class="chips"><div class="chip" onclick="this.classList.toggle('on')">NR</div><div class="chip" onclick="this.classList.toggle('on')">R</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon">❤️</div>
-        <div class="sec-info"><div class="sec-title">Triagem Neonatal</div><div class="sec-sub">Testes obrigatórios</div></div>
-        <div class="sec-dot"></div>
       </div>
       <div class="sec-body">
-        <div class="fld span2">
-          <span class="lbl">Reflexo Vermelho (TRV)</span>
-          <div class="chips">
-            <div class="chip" onclick="this.classList.toggle('on')">POSITIVO BILATERAL</div>
-            <div class="chip" onclick="this.classList.toggle('on')">NEGATIVO</div>
-          </div>
+        <div class="fld">
+          <label class="lbl">Peso Atual (g)</label>
+          <input type="number" placeholder="Ex: 3200">
         </div>
         <div class="fld">
-          <span class="lbl">Ox. MSD (%)</span>
-          <input type="number" placeholder="98">
-        </div>
-        <div class="fld">
-          <span class="lbl">Ox. MID (%)</span>
-          <input type="number" placeholder="98">
+          <label class="lbl">Temperatura (°C)</label>
+          <input type="text" placeholder="36.5">
         </div>
         <div class="fld span2">
-          <span class="lbl">Teste do Coraçãozinho</span>
+          <label class="lbl">Triagens Realizadas</label>
           <div class="chips">
-            <div class="chip" onclick="this.classList.toggle('on')">APROVADO</div>
-            <div class="chip" onclick="this.classList.toggle('on')">FALHOU</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Teste do Coraçãozinho</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Reflexo Vermelho</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Orelhinha</div>
+            <div class="chip" onclick="this.classList.toggle('on')">Linguinha</div>
           </div>
         </div>
-        <div class="fld">
-          <span class="lbl">Orelhinha (TANU)</span>
-          <div class="chips">
-            <div class="chip" onclick="this.classList.toggle('on')">PASSOU</div>
-            <div class="chip" onclick="this.classList.toggle('on')">FALHOU</div>
-          </div>
-        </div>
-        <div class="fld">
-          <span class="lbl">Linguinha</span>
-          <div class="chips">
-            <div class="chip" onclick="this.classList.toggle('on')">SEM ALTERAÇÃO</div>
-            <div class="chip" onclick="this.classList.toggle('on')">ALTERADO</div>
-          </div>
+        <div class="fld span2">
+          <label class="lbl">Anotações do Exame</label>
+          <textarea rows="3" placeholder="Descreva o exame físico..."></textarea>
         </div>
       </div>
-    </div>
+    </section>
+
+    <div style="height: 40px;"></div>
 
   </div>
 
-  <div class="preview">
-    <div class="prev-head">PREVISUALIZAÇÃO DA EVOLUÇÃO</div>
-    <div class="prev-tabs">
-      <div class="prev-tab active">Texto Estruturado</div>
+  <aside class="preview-container">
+    <div class="preview-sticky">
+      <div class="prev-head">PREVISUALIZAÇÃO DA EVOLUÇÃO</div>
+      <div class="prev-content" id="previewTxt">
+# EVOLUÇÃO NEONATAL
+Paciente: [Nome]
+IG: [___]
+Peso: [___]
+
+EXAME FÍSICO:
+[Aguardando preenchimento...]
+
+CONDUTA:
+- Manter vigilância.
+- Aleitamento materno exclusivo.
+      </div>
+      <div class="prev-foot">
+        <button class="btn-copy">COPIAR TEXTO</button>
+      </div>
     </div>
-    <div class="prev-doc">
-      <div class="pv-line"><strong># IDENTIFICAÇÃO</strong></div>
-      <div class="pv-line">RN de [Nome], IG: [38+2] semanas.</div>
-      <div class="pv-spacer" style="height:10px"></div>
-      <div class="pv-line"><strong># EXAME FÍSICO</strong></div>
-      <div class="pv-line">Ativo e reativo, corado, hidratado.</div>
-      <div class="pv-line">ACV: RCR em 2T, bulhas normofonéticas.</div>
-      <div class="pv-line">AR: MV presente sem ruídos adventícios.</div>
-      <div class="pv-line">ABD: Globoso, indolor, ruídos hidroaéreos presentes.</div>
-    </div>
-    <div class="prev-foot">
-      <button class="btn-copy">COPIAR PARA O PRONTUÁRIO</button>
-    </div>
-  </div>
+  </aside>
+
 </div>
+
+<script>
+  // Função simples para demonstrar interatividade nos chips
+  // (Pode ser expandida para gerar o texto automaticamente)
+  console.log("Layout NeoEvolve v7.1 carregado com sucesso.");
+</script>
 
 </body>
 </html>
