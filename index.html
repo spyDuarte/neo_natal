@@ -1184,10 +1184,12 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
 'use strict';
 
 // ─── State ────────────────────────────────────────────────────────
-let hgts       = [];
-let pesos      = [];
-let hgtHistory = [];
-let editMode   = false;
+const NeoEvolveState = {
+  hgts: [],
+  pesos: [],
+  hgtHistory: [],
+  editMode: false
+};
 
 // ─── DOM helpers ──────────────────────────────────────────────────
 const $     = id => document.getElementById(id);
@@ -1216,14 +1218,14 @@ function switchTab(name) {
 
 // ─── Edit mode ────────────────────────────────────────────────────
 function toggleEditMode() {
-  editMode = !editMode;
+  NeoEvolveState.editMode = !NeoEvolveState.editMode;
   const doc = $('prevDoc');
   const ta  = $('prevTextarea');
   const btn = $('btnEdit');
   const bar = $('editBar');
   const dot = $('dot');
 
-  if (editMode) {
+  if (NeoEvolveState.editMode) {
     if (!ta.dataset.hasEdits) ta.value = gen();
     doc.style.display = 'none';
     ta.classList.add('active');
@@ -1254,7 +1256,7 @@ function regenEditTxt() {
 
 function activeText() {
   const ta = $('prevTextarea');
-  if (editMode) return ta.value;
+  if (NeoEvolveState.editMode) return ta.value;
   if (ta && ta.dataset.hasEdits) return ta.value;
   return gen();
 }
@@ -1393,9 +1395,9 @@ function updateMeta() {
     const dot = $('dot-' + sec.id);
     let has = false;
     if (sec.id === 's-pes') {
-      has = pesos.length > 0;
+      has = NeoEvolveState.pesos.length > 0;
     } else {
-      if (sec.id === 's-hor' && hgts.length) has = true;
+      if (sec.id === 's-hor' && NeoEvolveState.hgts.length) has = true;
       if (!has) {
         sec.querySelectorAll('input:not([readonly]):not([type=button]),textarea,select').forEach(e => {
           if (e.value.trim()) has = true;
@@ -1423,7 +1425,7 @@ function updateMeta() {
 function updateAlerts() {
   const alerts = [];
 
-  hgts.forEach(h => {
+  NeoEvolveState.hgts.forEach(h => {
     if (h.g < 40) alerts.push('HGT ' + h.g + ' mg/dL — HIPOGLICEMIA GRAVE');
     else if (h.g < 45) alerts.push('HGT ' + h.g + ' mg/dL — Hipoglicemia');
   });
@@ -1445,7 +1447,7 @@ function updateAlerts() {
 
   const base = parseInt(v('pNasc'), 10);
   if (base) {
-    pesos.forEach(p => {
+    NeoEvolveState.pesos.forEach(p => {
       const d = (p.g - base) / base * 100;
       if (d < -10) alerts.push('Peso ' + p.dt.split('-').reverse().join('/') + ': perda de ' + Math.abs(d).toFixed(1) + '%');
     });
@@ -1474,22 +1476,22 @@ function aHGT() {
   if (!val) return;
   const g = parseInt(val);
   if (isNaN(g) || g <= 0) return;
-  hgtHistory.push(JSON.parse(JSON.stringify(hgts)));
-  hgts.push({ g, hr, dt });
+  NeoEvolveState.hgtHistory.push(JSON.parse(JSON.stringify(NeoEvolveState.hgts)));
+  NeoEvolveState.hgts.push({ g, hr, dt });
   $('hgtIn').value = ''; $('hgtHr').value = ''; $('hgtDt').value = '';
   renderHGT(); upd();
 }
 function removeHGT(i) {
-  hgtHistory.push(JSON.parse(JSON.stringify(hgts)));
-  hgts.splice(i, 1); renderHGT(); upd();
+  NeoEvolveState.hgtHistory.push(JSON.parse(JSON.stringify(NeoEvolveState.hgts)));
+  NeoEvolveState.hgts.splice(i, 1); renderHGT(); upd();
 }
 function undoHGT() {
-  if (!hgtHistory.length) return;
-  hgts = hgtHistory.pop();
+  if (!NeoEvolveState.hgtHistory.length) return;
+  NeoEvolveState.hgts = NeoEvolveState.hgtHistory.pop();
   renderHGT(); upd();
 }
 function renderHGT() {
-  $('hgtList').innerHTML = hgts.map((h, i) => {
+  $('hgtList').innerHTML = NeoEvolveState.hgts.map((h, i) => {
     const cls   = h.g < 40 ? 'crit' : h.g < 45 ? 'low' : '';
     const lbl   = h.g < 40 ? '⚠ GRAVE' : h.g < 45 ? '↓ HIPO' : '';
     const timeParts = [];
@@ -1499,41 +1501,38 @@ function renderHGT() {
     const badge = lbl ? ' <span class="hgt-label">' + lbl + '</span>' : '';
     return `<div class="hgt-tag ${cls}">${h.g} mg/dL${time}${badge}<span class="x" onclick="removeHGT(${i})">✕</span></div>`;
   }).join('');
-  $('btnUndoHgt').disabled = (hgtHistory.length === 0);
+  $('btnUndoHgt').disabled = (NeoEvolveState.hgtHistory.length === 0);
 }
 
 // ─── Peso evolutivo ───────────────────────────────────────────────
 function aPeso() {
   const dt = v('pesoDt'), g = parseInt(v('pesoVal'), 10);
   if (!dt || isNaN(g) || g <= 0) return;
-  pesos.push({ dt, g });
-  pesos.sort((a, b) => a.dt.localeCompare(b.dt));
+  NeoEvolveState.pesos.push({ dt, g });
+  NeoEvolveState.pesos.sort((a, b) => a.dt.localeCompare(b.dt));
   $('pesoDt').valueAsDate = new Date();
   $('pesoVal').value = '';
   renderPeso(); upd();
 }
-function cPeso()       { pesos = []; renderPeso(); upd(); }
-function ePeso(i, val) { pesos[i].g = parseInt(val, 10) || 0; renderPeso(); upd(); }
-function removePeso(i) { pesos.splice(i, 1); renderPeso(); upd(); }
-function renderPeso() {
-  const el   = $('pesoRows');
-  const base = parseInt(v('pNasc'), 10);
-
+function cPeso()       { NeoEvolveState.pesos = []; renderPeso(); upd(); }
+function ePeso(i, val) { NeoEvolveState.pesos[i].g = parseInt(val, 10) || 0; renderPeso(); upd(); }
+function removePeso(i) { NeoEvolveState.pesos.splice(i, 1); renderPeso(); upd(); }
+function renderPesoChart(base) {
   const chart = $('pesoChart');
-  if (pesos.length >= 2) {
-    const vals = pesos.map(p => p.g);
+  if (NeoEvolveState.pesos.length >= 2) {
+    const vals = NeoEvolveState.pesos.map(p => p.g);
     const minV = Math.min(...vals), maxV = Math.max(...vals, base || 0);
     const padded = Math.max(maxV - minV, 100);
     const W = 340, H = 55, PAD = 8;
-    const toX = i => PAD + i * (W - PAD * 2) / (pesos.length - 1 || 1);
+    const toX = i => PAD + i * (W - PAD * 2) / (NeoEvolveState.pesos.length - 1 || 1);
     const toY = g => H - PAD - (g - (minV - 50)) / (padded + 100) * (H - PAD * 2);
-    const pts = pesos.map((p, i) => toX(i) + ',' + toY(p.g)).join(' ');
+    const pts = NeoEvolveState.pesos.map((p, i) => toX(i) + ',' + toY(p.g)).join(' ');
     let baseLine = '';
     if (base && !isNaN(base)) {
       const by = toY(base);
       baseLine = `<line x1="${PAD}" y1="${by}" x2="${W-PAD}" y2="${by}" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3"/>`;
     }
-    const dotsSVG = pesos.map((p, i) => {
+    const dotsSVG = NeoEvolveState.pesos.map((p, i) => {
       const d = base ? (p.g - base) / base * 100 : 0;
       const col = d < -10 ? '#e06077' : d < -7 ? '#e8a44a' : d < -3 ? '#c4b000' : '#186237';
       return `<circle cx="${toX(i)}" cy="${toY(p.g)}" r="3.5" fill="${col}" stroke="#fff" stroke-width="1.5"/>`;
@@ -1543,12 +1542,15 @@ function renderPeso() {
   } else {
     chart.style.display = 'none';
   }
+}
 
-  if (!pesos.length) {
+function renderPesoRows(base) {
+  const el   = $('pesoRows');
+  if (!NeoEvolveState.pesos.length) {
     el.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:4px 0">Nenhum peso cadastrado.</div>';
     return;
   }
-  el.innerHTML = pesos.map((p, i) => {
+  el.innerHTML = NeoEvolveState.pesos.map((p, i) => {
     let pct = '', color = 'var(--muted)';
     if (base && !isNaN(base)) {
       const d = (p.g - base) / base * 100;
@@ -1565,17 +1567,18 @@ function renderPeso() {
   }).join('');
 }
 
+function renderPeso() {
+  const base = parseInt(v('pNasc'), 10);
+  renderPesoChart(base);
+  renderPesoRows(base);
+}
+
 // ─── Text generation ──────────────────────────────────────────────
 const brDt = iso => iso ? iso.split('-').reverse().join('/') : '';
 
-function gen() {
-  const lines = [];
-  const add = s => { if (s !== null && s !== undefined && s !== '') lines.push(s); };
-
+function genIdentificacao(add) {
   const nome = v('nomeRN');
   if (nome) add(nome.toUpperCase());
-
-  const fc = v('fc'), fr = v('fr'), tp = v('temp'), sat = v('sat');
 
   const id = calcIdade();
   const dn = brDt(v('dataNasc')), hn = v('horaNasc');
@@ -1617,7 +1620,9 @@ function gen() {
   if (iN.length) add('#' + iN.join(', ') + '.');
 
   const og = v('obsGest'); if (og) add('#' + og.toUpperCase());
+}
 
+function genPreNatal(add) {
   const nc = v('nCons'), ig2 = selN('iGest');
   if (nc || ig2.length) {
     let s = '#PRÉ NATAL';
@@ -1628,7 +1633,9 @@ function gen() {
     if (ig2.length) s += ', ' + ig2.join(', ');
     add(s);
   }
+}
 
+function genMae(add) {
   const maeParts = [];
   const tm = v('tipoMae'); if (tm) maeParts.push(tm);
   const soroMap = { hiv:'HIV', vdrl:'VDRL', hbsag:'HBsAg', strep:'STREP B', toxo:'TOXO' };
@@ -1636,12 +1643,16 @@ function gen() {
     const val2 = sel1(id2); if (val2) maeParts.push(lbl + ' ' + val2);
   });
   if (maeParts.length) add('#MÃE: ' + maeParts.join(', '));
+}
 
+function genRn(add) {
   const rnParts = [];
   const trRN = v('tipoRN'); if (trRN) rnParts.push('TIPO ' + trRN);
   const co = sel1('coombs'); if (co && co !== 'NÃO COLETADO') rnParts.push('COOMBS ' + co);
   if (rnParts.length) add('#RN: ' + rnParts.join(', '));
+}
 
+function genTriagem(add) {
   const triParts = [];
   const trvV = sel1('trv'); if (trvV) triParts.push('TRV: ' + trvV);
   const msd = v('oxMSD'), mid2 = v('oxMID');
@@ -1657,7 +1668,9 @@ function gen() {
   const tan = sel1('tanu'); if (tan) triParts.push('TANU: ' + tan);
   const pez = sel1('pezinho'); if (pez) triParts.push('PEZINHO: ' + pez);
   if (triParts.length) add('#TRIAGEM: ' + triParts.join(' | '));
+}
 
+function genBilirrubinas(add) {
   const bilParts = [];
   const btcV = v('btc'); if (btcV) bilParts.push('BTc ' + btcV + ' MG/DL');
   const btsV = v('bts'); if (btsV) bilParts.push('BT ' + btsV + ' MG/DL');
@@ -1666,13 +1679,15 @@ function gen() {
   const krV  = sel1('kramer'); if (krV) bilParts.push('KRAMER ZONA ' + krV);
   const ftV  = sel1('foto');   if (ftV) bilParts.push(ftV);
   if (bilParts.length) add('#BILIRRUBINAS: ' + bilParts.join(', '));
+}
 
+function genUltimasHoras(add) {
   const ultParts = [];
   const sp = sel1('suporte'); if (sp) ultParts.push('RN EM ' + sp);
   const al = sel1('aleit');   if (al) ultParts.push(al);
   const fm = sel1('formula'); if (fm && fm !== 'NÃO FEZ') ultParts.push('FÓRMULA: ' + fm);
-  if (hgts.length) {
-    const hgtStr = hgts.map(h => {
+  if (NeoEvolveState.hgts.length) {
+    const hgtStr = NeoEvolveState.hgts.map(h => {
       const warn = h.g < 40 ? ' ⚠ GRAVE' : h.g < 45 ? ' ↓ HIPO' : '';
       const dtHr = [h.dt ? h.dt.split('-').reverse().join('/') : '', h.hr].filter(Boolean).join(' ');
       return h.g + (dtHr ? ' [' + dtHr + ']' : '') + warn;
@@ -1684,10 +1699,12 @@ function gen() {
   else { if (di) ultParts.push('DIURESE ' + di); if (ev) ultParts.push('EVACUAÇÕES ' + ev); }
   const oh = v('obsHor'); if (oh) ultParts.push(oh.toUpperCase());
   if (ultParts.length) add('#ÚLTIMAS HORAS: ' + ultParts.join(', ') + '.');
+}
 
-  if (pesos.length) {
+function genPesos(add) {
+  if (NeoEvolveState.pesos.length) {
     const base = parseInt(v('pNasc'), 10);
-    pesos.forEach(p => {
+    NeoEvolveState.pesos.forEach(p => {
       let s = '#PESO: ' + p.g + 'G';
       if (base && !isNaN(base)) {
         const d = (p.g - base) / base * 100;
@@ -1698,7 +1715,10 @@ function gen() {
       add(s);
     });
   }
+}
 
+function genExame(add) {
+  const fc = v('fc'), fr = v('fr'), tp = v('temp'), sat = v('sat');
   const geral = [];
   const xAN = selN('xAtiv'); xAN.forEach(a => geral.push(a));
   const xC  = sel1('xCor');  if (xC)  geral.push(xC);
@@ -1741,23 +1761,47 @@ function gen() {
     if (xRfl) add('REFLEXOS PRIMITIVOS ' + xRfl + '.');
   }
   add('');
+}
 
+function genImp(add) {
   const cg2 = sel1('cg'), dx = selN('diag'), oi = v('obsImp');
   if (cg2 || dx.length || oi) {
     add('#IMP: RN EM ' + (cg2 || ''));
     dx.forEach(d => add('— ' + d));
     if (oi) add(oi.toUpperCase());
   }
+}
 
+function genCond(add) {
   const cn = selN('cond'), pl = v('plano');
   if (cn.length || pl) {
     add('CD:');
     cn.forEach(c => add('- ' + c));
     if (pl) pl.split('\n').forEach(l => l.trim() && add('- ' + l.trim().toUpperCase()));
   }
+}
 
+function genTextoLivre(add) {
   const tl = v('textoLivre');
   if (tl) tl.split('\n').forEach(l => add(l));
+}
+
+function gen() {
+  const lines = [];
+  const add = s => { if (s !== null && s !== undefined && s !== '') lines.push(s); };
+
+  genIdentificacao(add);
+  genPreNatal(add);
+  genMae(add);
+  genRn(add);
+  genTriagem(add);
+  genBilirrubinas(add);
+  genUltimasHoras(add);
+  genPesos(add);
+  genExame(add);
+  genImp(add);
+  genCond(add);
+  genTextoLivre(add);
 
   return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
@@ -1816,7 +1860,7 @@ function upd() {
   updateMeta();
   updateAlerts();
 
-  if (!editMode) {
+  if (!NeoEvolveState.editMode) {
     // Only flash dot and re-render preview when NOT in edit mode
     const dot = $('dot');
     dot.style.opacity = '1';
@@ -1860,11 +1904,11 @@ function doClr() {
   $('oxiDelta').className = 'oxi-delta'; $('oxiDelta').textContent = '';
   $('bii').value = '';
   $('idadeCalc').textContent = '';
-  hgts = []; pesos = []; hgtHistory = [];
+  NeoEvolveState.hgts = []; NeoEvolveState.pesos = []; NeoEvolveState.hgtHistory = [];
   renderHGT(); renderPeso();
   $('pesoDt').valueAsDate = new Date();
   try { localStorage.removeItem('neoevolve_draft'); } catch(e){}
-  if (editMode) toggleEditMode();
+  if (NeoEvolveState.editMode) toggleEditMode();
   const ta = $('prevTextarea');
   ta.value = '';
   delete ta.dataset.hasEdits;
@@ -1880,8 +1924,8 @@ function autoSave() {
       const state = {
         fields: {},
         chips: {},
-        hgts,
-        pesos,
+        hgts: NeoEvolveState.hgts,
+        pesos: NeoEvolveState.pesos,
         notes: v('notesPriv'),
         ts: Date.now()
       };
@@ -1911,8 +1955,8 @@ function restoreData() {
         c.classList.toggle('on', selected.includes(txt));
       });
     });
-    hgts  = state.hgts  || [];
-    pesos = state.pesos || [];
+    NeoEvolveState.hgts  = state.hgts  || [];
+    NeoEvolveState.pesos = state.pesos || [];
     if (state.notes) $('notesPriv').value = state.notes;
     ['ap1','ap5','ap10'].forEach(id => { const el = $(id); if (el && el.value) styleApgar(el); });
     renderHGT(); renderPeso();
@@ -1954,7 +1998,22 @@ window.addEventListener('DOMContentLoaded', () => {
   $('hgtDt').valueAsDate  = new Date();
 
   const fp = $('fp');
-  fp.addEventListener('input',  upd);
+
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  const updDebounced = debounce(upd, 300);
+
+  fp.addEventListener('input',  updDebounced);
   fp.addEventListener('change', upd);
 
   $('livreBody').style.display    = 'none';
