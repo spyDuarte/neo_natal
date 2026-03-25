@@ -1808,12 +1808,6 @@ function renderFromText(txt) {
   doc.innerHTML = html;
 }
 
-function renderPreview() {
-  if (editMode) return;
-  if ($('prevTextarea').dataset.hasEdits) return;
-  renderFromText(gen());
-}
-
 // ─── Update ───────────────────────────────────────────────────────
 function upd() {
   calcBI();
@@ -1821,10 +1815,17 @@ function upd() {
   refreshOxi();
   updateMeta();
   updateAlerts();
-  const dot = $('dot');
-  dot.style.opacity = '1';
-  setTimeout(() => dot.style.opacity = '.25', 160);
-  renderPreview();
+
+  if (!editMode) {
+    // Only flash dot and re-render preview when NOT in edit mode
+    const dot = $('dot');
+    dot.style.opacity = '1';
+    setTimeout(() => dot.style.opacity = '.25', 160);
+    if (!$('prevTextarea').dataset.hasEdits) {
+      renderFromText(gen());
+    }
+  }
+
   autoSave();
 }
 
