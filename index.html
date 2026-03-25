@@ -35,14 +35,15 @@ header{
   background:#000;color:#fff;
   padding:0 18px;
   display:flex;align-items:center;gap:12px;
-  z-index:100;
+  z-index:1000; /* Ajustado para manter sobreposição */
   height:44px;
   flex-shrink:0;
+  width: 100%;
 }
-.logo{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;}
+.logo{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em; white-space: nowrap;}
 .badge{background:#fff;color:#000;font-size:9px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
 .spacer{flex:1;}
-.header-patient{font-family:var(--mono);font-size:11px;color:#999;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .2s;}
+.header-patient{font-family:var(--mono);font-size:11px;color:#999;flex: 1; max-width: 240px; min-width: 0; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .2s; text-align: right;}
 .header-patient.filled{color:#fff;}
 .header-progress{display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .prog-bar{width:80px;height:4px;background:#333;border-radius:2px;overflow:hidden;}
@@ -91,13 +92,13 @@ header{
 .sec.closed .sec-body{display:none;}
 .sec.closed .sec-arrow{transform:rotate(-90deg);}
 
-.sec-body{padding:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.sec-body{padding:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:9px;}
 .sec-body.one{grid-template-columns:1fr;}
-.sec-body.three{grid-template-columns:1fr 1fr 1fr;}
+.sec-body.three{grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));}
 .span2{grid-column:1/-1;}
 
 /* FIELDS */
-.fld{display:flex;flex-direction:column;gap:3px;}
+.fld{display:flex;flex-direction:column;gap:3px; min-width: 0;}
 .lbl{
   font-size:10px;font-weight:700;color:var(--muted);
   letter-spacing:.07em;text-transform:uppercase;
@@ -131,7 +132,7 @@ input.vital-warn{border-color:#e8a44a;background:var(--warn-bg);}
 input.vital-err {border-color:#e06077;background:var(--err-bg);}
 
 /* APGAR */
-.apgar-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.apgar-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;}
 .apgar-score{display:flex;flex-direction:column;align-items:center;gap:3px;}
 .apgar-score label{font-size:9px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
 .apgar-score input{text-align:center;font-weight:700;font-family:var(--mono);font-size:16px;padding:8px 4px;}
@@ -395,11 +396,39 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px;}
 
-/* RESPONSIVE */
+/* RESPONSIVE AJUSTES */
 @media(max-width:880px){
-  .layout{grid-template-columns:1fr;height:auto;}
-  .preview{position:static;height:440px;border-left:none;border-top:2px solid #000;}
+  html, body { 
+    height: auto; 
+    overflow: auto; /* Permite a rolagem nativa em telas menores */
+  }
+  header {
+    position: sticky;
+    top: 0;
+  }
+  .layout {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  .form-panel {
+    overflow: visible;
+    height: auto;
+  }
+  .preview {
+    position: static;
+    height: 80vh; /* Tamanho fixo amigável na porção inferior da tela */
+    min-height: 500px;
+    border-left: none;
+    border-top: 2px solid #000;
+  }
 }
+@media(max-width:500px){
+  .header-patient { display: none; } /* Previne quebra de linha do header em celulares pequenos */
+  .badge { display: none; }
+}
+
 @media print{
   header,.form-panel,#restoreBanner{display:none;}
   .layout{display:block;}
@@ -432,7 +461,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
 <div class="layout">
 <div class="form-panel" id="fp">
 
-  <!-- ① IDENTIFICAÇÃO -->
   <div class="sec" id="s-id">
     <div class="sec-head" onclick="tog('s-id')">
       <div class="sec-icon">👶</div>
@@ -543,7 +571,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ② PRÉ-NATAL -->
   <div class="sec closed" id="s-pre">
     <div class="sec-head" onclick="tog('s-pre')">
       <div class="sec-icon">🤰</div>
@@ -590,7 +617,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ③ DADOS MATERNOS -->
   <div class="sec closed" id="s-mae">
     <div class="sec-head" onclick="tog('s-mae')">
       <div class="sec-icon">🩺</div>
@@ -651,7 +677,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ④ DADOS LAB DO RN -->
   <div class="sec closed" id="s-rn">
     <div class="sec-head" onclick="tog('s-rn')">
       <div class="sec-icon">🧬</div>
@@ -679,7 +704,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ⑤ TRIAGEM NEONATAL -->
   <div class="sec" id="s-tri">
     <div class="sec-head" onclick="tog('s-tri')">
       <div class="sec-icon">❤️</div>
@@ -737,7 +761,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ⑥ BILIRRUBINAS -->
   <div class="sec closed" id="s-bili">
     <div class="sec-head" onclick="tog('s-bili')">
       <div class="sec-icon">🟡</div>
@@ -785,7 +808,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ⑦ ÚLTIMAS HORAS -->
   <div class="sec" id="s-hor">
     <div class="sec-head" onclick="tog('s-hor')">
       <div class="sec-icon">🍼</div>
@@ -828,9 +850,9 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
       <div class="fld">
         <span class="lbl">HGT <span class="lbl-hint">mg/dL · &lt;45 hipoglicemia · &lt;40 grave</span></span>
         <div class="row">
-          <input type="number" id="hgtIn" placeholder="mg/dL" min="0" max="600" style="max-width:90px" onkeydown="if(event.key==='Enter')aHGT()">
-          <input type="date" id="hgtDt" style="max-width:138px" title="Data da coleta">
-          <input type="time" id="hgtHr" style="max-width:95px" title="Horário da coleta">
+          <input type="number" id="hgtIn" placeholder="mg/dL" min="0" max="600" style="flex: 1; min-width: 80px;" onkeydown="if(event.key==='Enter')aHGT()">
+          <input type="date" id="hgtDt" style="flex: 1; min-width: 120px;" title="Data da coleta">
+          <input type="time" id="hgtHr" style="flex: 1; min-width: 80px;" title="Horário da coleta">
           <button class="mbtn" onclick="aHGT()" style="padding:6px 11px;font-size:10px">+ Add</button>
           <button class="mbtn" onclick="undoHGT()" style="padding:6px 10px;font-size:10px" id="btnUndoHgt" disabled title="Desfazer último HGT">↩</button>
         </div>
@@ -861,7 +883,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ⑧ PESO EVOLUTIVO -->
   <div class="sec" id="s-pes">
     <div class="sec-head" onclick="tog('s-pes')">
       <div class="sec-icon">⚖️</div>
@@ -873,15 +894,14 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
       <div id="pesoChart" class="peso-chart" style="display:none"></div>
       <div id="pesoRows"></div>
       <div class="row" style="margin-top:8px">
-        <input type="date" id="pesoDt" style="max-width:148px">
-        <input type="number" id="pesoVal" placeholder="gramas" min="200" max="9999" style="max-width:105px">
+        <input type="date" id="pesoDt" style="flex: 1; min-width: 120px;">
+        <input type="number" id="pesoVal" placeholder="gramas" min="200" max="9999" style="flex: 1; min-width: 80px;">
         <button class="mbtn" onclick="aPeso()" style="padding:6px 11px;font-size:10px">+ Peso</button>
         <button class="mbtn" onclick="cPeso()" style="padding:6px 10px;font-size:10px">✕ Limpar</button>
       </div>
     </div>
   </div>
 
-  <!-- ⑨ EXAME FÍSICO -->
   <div class="sec" id="s-exa">
     <div class="sec-head" onclick="tog('s-exa')">
       <div class="sec-icon">🔍</div>
@@ -1027,7 +1047,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ⑩ IMPRESSÃO DIAGNÓSTICA -->
   <div class="sec" id="s-imp">
     <div class="sec-head" onclick="tog('s-imp')">
       <div class="sec-icon">🔬</div>
@@ -1072,7 +1091,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ⑪ CONDUTA -->
   <div class="sec" id="s-cond">
     <div class="sec-head" onclick="tog('s-cond')">
       <div class="sec-icon">📋</div>
@@ -1108,7 +1126,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-  <!-- ✏️ TEXTO LIVRE -->
   <div class="free-text-editor" id="s-livre">
     <div class="free-text-editor-head" onclick="togLivre()">
       <div class="sec-icon">✏️</div>
@@ -1121,10 +1138,7 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     </div>
   </div>
 
-</div><!-- /form-panel -->
-
-<!-- PREVIEW -->
-<div class="preview">
+</div><div class="preview">
   <div class="prev-head">
     <div class="prev-head-label">
       Prévia da Evolução
@@ -1134,7 +1148,6 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     <button class="btn-copy" id="btnCopy" onclick="doCopy()">📋 Copiar</button>
   </div>
 
-  <!-- Alert panel -->
   <div class="alert-panel" id="alertPanel">
     <div class="alert-panel-title">🚨 Alertas Ativos</div>
     <div id="alertItems"></div>
@@ -1166,9 +1179,7 @@ hr.div{border:none;border-top:1px solid #eee;margin:2px 0;}
     <button class="btn-alt btn-stretch" onclick="doSave()">💾 Salvar .txt</button>
   </div>
 </div>
-</div><!-- /layout -->
-
-<script>
+</div><script>
 'use strict';
 
 // ─── State ────────────────────────────────────────────────────────
@@ -1429,7 +1440,7 @@ function updateAlerts() {
   if (v('fc')   && (fcVal < 100 || fcVal > 180)) alerts.push('FC fora do normal: ' + fcVal + ' bpm');
   if (v('fr')   && (frVal < 30  || frVal > 60))  alerts.push('FR fora do normal: ' + frVal + ' irpm');
   if (v('temp') && (tVal  < 36.5|| tVal  > 37.5))alerts.push('Temperatura fora do normal: ' + tVal + '°C');
-  if (v('sat')  && satVal < 95)                   alerts.push('SatO2 abaixo do alvo: ' + satVal + '%');
+  if (v('sat')  && satVal < 95)                  alerts.push('SatO2 abaixo do alvo: ' + satVal + '%');
 
   const base = parseInt(v('pNasc'), 10);
   if (base) {
