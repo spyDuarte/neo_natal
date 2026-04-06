@@ -2075,27 +2075,51 @@ function renderPeso() {
   }).join('');
 }
 
-// ─── Text generation ──────────────────────────────────────────────
+// ─── Gerador de Evolução - Lógica Refatorada ──────────────────────
 const brDt = iso => iso ? iso.split('-').reverse().join('/') : '';
+
+/**
+ * Formata valor numérico com sufixo condicional
+ */
+function fmtNum(val, suffix = '') {
+  return val ? val + suffix : '—';
+}
+
+/**
+ * Junta partes não vazias com separador
+ */
+function joinParts(parts, sep = ', ') {
+  return parts.filter(p => p && p.trim()).join(sep);
+}
+
+/**
+ * Converte array de linhas em texto final
+ */
+function buildText(lines) {
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
 
 function gen() {
   const lines = [];
   const add = s => { if (s !== null && s !== undefined && s !== '') lines.push(s); };
-
+  
+  // Dados básicos
   const nome = v('nomeRN');
   if (nome) add(nome.toUpperCase());
-
+  
   const fc = v('fc'), fr = v('fr'), tp = v('temp'), sat = v('sat');
-
   const id = calcIdade();
   const dn = brDt(v('dataNasc')), hn = v('horaNasc');
+  
+  // Cabeçalho RN
   if (id || dn) {
     let s = '#RN';
     if (id) s += ' COM ' + id;
     if (dn) s += ' — NASCEU ' + dn + (hn ? ' ÀS ' + hn + 'H' : '');
     add(s);
   }
-
+  
+  // Dados do parto
   const partoParts = [];
   const pt = sel1('parto'); if (pt) partoParts.push(pt);
   const ig = v('ig');
@@ -2110,63 +2134,68 @@ function gen() {
     if (pn) s += (s ? ' ' : '') + '(' + pn + 'G)';
     partoParts.push(s);
   }
+  
+  // APGAR sem alertas
   const a1 = v('ap1'), a5 = v('ap5'), a10 = v('ap10');
   if (a1 || a5) {
-    let apStr = 'APGAR ' + (a1||'—') + '/' + (a5||'—') + (a10 ? '/' + a10 : '');
-    if (a5 && parseInt(a5) < 7) apStr += (parseInt(a5) < 4 ? ' ⚠ DEP. GRAVE' : ' ⚠ INTERMEDIÁRIO');
+    const apStr = 'APGAR ' + fmtNum(a1) + '/' + fmtNum(a5) + (a10 ? '/' + a10 : '');
     partoParts.push(apStr);
   }
+  
+  // Clampeamento, micção
   const cl = sel1('clamp');
   if (cl === 'OPORTUNO') partoParts.push('CLAMPEAMENTO OPORTUNO DO CORDÃO');
   else if (cl) partoParts.push('CLAMPEAMENTO ' + cl);
   const mic = sel1('miccao');
   if (mic && mic !== 'NÃO REFERIDA') partoParts.push('1ª MICÇÃO: ' + mic);
-  if (partoParts.length) add('#' + partoParts.join(', ') + '.');
-
+  
+  if (partoParts.length) add('#' + joinParts(partoParts) + '.');
+  
+  // Intercorrências
   const iN = selN('interNasc').filter(s => s !== 'SEM INTERCORRÊNCIAS');
-  if (iN.length) add('#' + iN.join(', ') + '.');
-
+  if (iN.length) add('#' + joinParts(iN) + '.');
+  
+  // Observações gestacionais
   const og = v('obsGest'); if (og) add('#' + og.toUpperCase());
-
+  
+  // Pré-natal sem alertas
   const nc = v('nCons'), ig2 = selN('iGest');
   if (nc || ig2.length) {
     let s = '#PRÉ NATAL';
-    if (nc) {
-      s += ' COM ' + nc + ' CONSULTA' + (parseInt(nc) !== 1 ? 'S' : '');
-    }
-    if (ig2.length) s += ', ' + ig2.join(', ');
+    if (nc) s += ' COM ' + nc + ' CONSULTA' + (parseInt(nc) !== 1 ? 'S' : '');
+    if (ig2.length) s += ', ' + joinParts(ig2);
     add(s);
   }
-
+  
+  // Dados da mãe
   const maeParts = [];
   const tm = v('tipoMae'); if (tm) maeParts.push(tm);
   const soroMap = { hiv:'HIV', vdrl:'VDRL', hbsag:'HBsAg', strep:'STREP B', toxo:'TOXO' };
-  Object.entries(soroMap).forEach(([id2, lbl]) => {
-    const val2 = sel1(id2); if (val2) maeParts.push(lbl + ' ' + val2);
+  Object.entries(soroMap).forEach(([key, lbl]) => {
+    const val = sel1(key); if (val) maeParts.push(lbl + ' ' + val);
   });
-  if (maeParts.length) add('#MÃE: ' + maeParts.join(', '));
-
+  if (maeParts.length) add('#MÃE: ' + joinParts(maeParts));
+  
+  // Dados do RN
   const rnParts = [];
   const trRN = v('tipoRN'); if (trRN) rnParts.push('TIPO ' + trRN);
   const co = sel1('coombs'); if (co && co !== 'NÃO COLETADO') rnParts.push('COOMBS ' + co);
-  if (rnParts.length) add('#RN: ' + rnParts.join(', '));
-
+  if (rnParts.length) add('#RN: ' + joinParts(rnParts));
+  
+  // Triagem sem alertas
   const triParts = [];
   const trvV = sel1('trv'); if (trvV) triParts.push('TRV: ' + trvV);
   const msd = v('oxMSD'), mid2 = v('oxMID');
   if (msd || mid2) {
-    let oxStr = 'OX: MSD ' + (msd||'—') + '% / MID ' + (mid2||'—') + '%';
-    if (msd && mid2) {
-      const delta = Math.abs(parseInt(msd) - parseInt(mid2));
-      if (delta >= 3) oxStr += ' ⚠ Δ=' + delta + '% INVESTIGAR CCHD';
-    }
+    const oxStr = 'OX: MSD ' + fmtNum(msd) + '% / MID ' + fmtNum(mid2) + '%';
     triParts.push(oxStr);
   }
   const cor2 = sel1('coracao'); if (cor2) triParts.push('CORAÇÃOZINHO: ' + cor2);
   const tan = sel1('tanu'); if (tan) triParts.push('TANU: ' + tan);
   const pez = sel1('pezinho'); if (pez) triParts.push('PEZINHO: ' + pez);
   if (triParts.length) add('#TRIAGEM: ' + triParts.join(' | '));
-
+  
+  // Bilirrubinas
   const bilParts = [];
   const btcV = v('btc'); if (btcV) bilParts.push('BTc ' + btcV + ' MG/DL');
   const btsV = v('bts'); if (btsV) bilParts.push('BT ' + btsV + ' MG/DL');
@@ -2174,26 +2203,29 @@ function gen() {
   const biiV = v('bii'); if (biiV) bilParts.push('BI ' + biiV + ' MG/DL');
   const krV  = sel1('kramer'); if (krV) bilParts.push('KRAMER ZONA ' + krV);
   const ftV  = sel1('foto');   if (ftV) bilParts.push(ftV);
-  if (bilParts.length) add('#BILIRRUBINAS: ' + bilParts.join(', '));
-
+  if (bilParts.length) add('#BILIRRUBINAS: ' + joinParts(bilParts));
+  
+  // Últimas horas sem alertas
   const ultParts = [];
   const sp = sel1('suporte'); if (sp) ultParts.push('RN EM ' + sp);
   const al = sel1('aleit');   if (al) ultParts.push(al);
   const fm = sel1('formula'); if (fm && fm !== 'NÃO FEZ') ultParts.push('FÓRMULA: ' + fm);
+  
   if (hgts.length) {
     const hgtStr = hgts.map(h => {
-      const warn = h.g < 40 ? ' ⚠ GRAVE' : h.g < 45 ? ' ↓ HIPO' : '';
-      const dtHr = [h.dt ? h.dt.split('-').reverse().join('/') : '', h.hr].filter(Boolean).join(' ');
-      return h.g + (dtHr ? ' [' + dtHr + ']' : '') + warn;
+      const dtHr = [h.dt ? h.dt.split('-').reverse().join('/'), h.hr].filter(Boolean).join(' ');
+      return h.g + (dtHr ? ' [' + dtHr + ']' : '');
     }).join(' / ');
     ultParts.push('HGT: ' + hgtStr + ' MG/DL');
   }
+  
   const di = sel1('diur'), ev = sel1('evac');
   if (di === 'PRESENTE' && ev === 'PRESENTE') ultParts.push('DIURESE E EVACUAÇÕES OK');
   else { if (di) ultParts.push('DIURESE ' + di); if (ev) ultParts.push('EVACUAÇÕES ' + ev); }
   const oh = v('obsHor'); if (oh) ultParts.push(oh.toUpperCase());
-  if (ultParts.length) add('#ÚLTIMAS HORAS: ' + ultParts.join(', ') + '.');
-
+  if (ultParts.length) add('#ÚLTIMAS HORAS: ' + joinParts(ultParts) + '.');
+  
+  // Pesos sem alertas
   if (pesos.length) {
     const base = parseInt(v('pNasc'), 10);
     pesos.forEach(p => {
@@ -2201,13 +2233,13 @@ function gen() {
       if (base && !isNaN(base)) {
         const d = (p.g - base) / base * 100;
         s += ' (' + (d >= 0 ? '+' : '') + d.toFixed(1) + '%)';
-        if (d < -10) s += ' ⚠ PERDA >10%';
       }
       s += ' DIA ' + brDt(p.dt);
       add(s);
     });
   }
-
+  
+  // Exame físico
   const geral = [];
   const xAN = selN('xAtiv'); xAN.forEach(a => geral.push(a));
   const xC  = sel1('xCor');  if (xC)  geral.push(xC);
@@ -2216,19 +2248,19 @@ function gen() {
   const xI  = sel1('xIct');  if (xI)  geral.push(xI);
   const xR  = sel1('xResp'); if (xR)  geral.push('EM ' + xR);
   const oe  = v('obsExa');
-
+  
   const xAcvN = selN('xAcv'), xArN = selN('xAr');
   const xAcv = xAcvN.join(', '), xAr2 = xArN.join(', ');
   const xAbd = sel1('xAbd'), xCoto = sel1('xCoto');
   const xFA  = sel1('xFA'),  xRfl  = sel1('xRefl');
-
+  
   if (geral.length || oe || xAcv || xAr2 || xAbd || xCoto || xFA || xRfl || fc || fr) {
     add('#AO EXAME:');
-    let geralTxt = geral.join(', ');
+    let geralTxt = joinParts(geral);
     if (geralTxt) geralTxt += '.';
     if (oe) geralTxt += (geralTxt ? ' ' : '') + oe.toUpperCase();
     if (geralTxt) add(geralTxt);
-
+    
     if (xAcv || fc) {
       let s = 'ACV: ' + (xAcv || '');
       if (fc) s += (xAcv ? ' FC: ' : 'FC: ') + fc + ' BPM.';
@@ -2250,25 +2282,28 @@ function gen() {
     if (xRfl) add('REFLEXOS PRIMITIVOS ' + xRfl + '.');
   }
   add('');
-
+  
+  // Impressão diagnóstica
   const cg2 = sel1('cg'), dx = selN('diag'), oi = v('obsImp');
   if (cg2 || dx.length || oi) {
     add('#IMP: RN EM ' + (cg2 || ''));
     dx.forEach(d => add('— ' + d));
     if (oi) add(oi.toUpperCase());
   }
-
+  
+  // Conduta
   const cn = selN('cond'), pl = v('plano');
   if (cn.length || pl) {
     add('CD:');
     cn.forEach(c => add('- ' + c));
     if (pl) pl.split('\n').forEach(l => l.trim() && add('- ' + l.trim().toUpperCase()));
   }
-
+  
+  // Texto livre
   const tl = v('textoLivre');
   if (tl) tl.split('\n').forEach(l => add(l));
-
-  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  
+  return buildText(lines);
 }
 
 // ─── Preview renderer ─────────────────────────────────────────────
