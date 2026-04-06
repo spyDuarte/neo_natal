@@ -2133,7 +2133,6 @@ function gen() {
     let s = '#PRÉ NATAL';
     if (nc) {
       s += ' COM ' + nc + ' CONSULTA' + (parseInt(nc) !== 1 ? 'S' : '');
-      if (parseInt(nc) < 6) s += ' ⚠ ABAIXO DO MÍNIMO';
     }
     if (ig2.length) s += ', ' + ig2.join(', ');
     add(s);
