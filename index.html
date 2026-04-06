@@ -417,7 +417,6 @@ input.vital-err {border-color: var(--err); background: var(--err-bg);}
 .hgt-tag .x:hover{color:var(--err);}
 .hgt-tag.low {background:var(--warn-bg);border-color:var(--warn);color:var(--warn);}
 .hgt-tag.crit{background:var(--err-bg); border-color:var(--err);color:var(--err);}
-.hgt-tag .hgt-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
 
 /* Oximetry delta */
 .oxi-delta{
@@ -1860,10 +1859,10 @@ function refreshOxi() {
   const bothOk = msd >= 95 && mid >= 95;
   if (delta >= 3) {
     el.className = 'oxi-delta warn';
-    el.textContent = '⚠ Δ=' + delta + '% (MSD–MID) → Repetir em 1h. Se persistir, investigar cardiopatia congênita.';
+    el.textContent = 'Δ=' + delta + '% (MSD–MID) → Repetir em 1h. Se persistir, investigar cardiopatia congênita.';
   } else {
     el.className = 'oxi-delta ok';
-    el.textContent = '✓ Δ=' + delta + '%' + (bothOk ? ' · Ambas ≥95% — Teste aprovado.' : ' · Atenção: saturação abaixo de 95%.');
+    el.textContent = 'Δ=' + delta + '%' + (bothOk ? ' · Ambas ≥95% — Teste aprovado.' : ' · Atenção: saturação abaixo de 95%.');
   }
 }
 
@@ -1962,10 +1961,10 @@ function updateAlerts() {
   }
 
   const nc = parseInt(v('nCons'), 10);
-  if (!isNaN(nc) && nc < 6) alerts.push('Pré-natal com apenas ' + nc + ' consulta(s) — abaixo do mínimo');
+  if (!isNaN(nc) && nc < 6) alerts.push('Pré-natal com apenas ' + nc + ' consulta(s)');
 
   const a5 = parseInt(v('ap5'));
-  if (v('ap5') && a5 < 7) alerts.push('Apgar 5\' = ' + a5 + (a5 < 4 ? ' — DEPRESSÃO GRAVE' : ' — Intermediário'));
+  if (v('ap5') && a5 < 7) alerts.push('Apgar 5\' = ' + a5);
 
   const panel = $('alertPanel');
   const items = $('alertItems');
@@ -2001,13 +2000,11 @@ function undoHGT() {
 function renderHGT() {
   $('hgtList').innerHTML = hgts.map((h, i) => {
     const cls   = h.g < 40 ? 'crit' : h.g < 45 ? 'low' : '';
-    const lbl   = h.g < 40 ? '⚠ GRAVE' : h.g < 45 ? '↓ HIPO' : '';
     const timeParts = [];
     if (h.dt) timeParts.push(h.dt.split('-').reverse().join('/'));
     if (h.hr) timeParts.push(h.hr);
     const time  = timeParts.length ? ' <span style="opacity:.7">[' + timeParts.join(' ') + ']</span>' : '';
-    const badge = lbl ? ' <span class="hgt-label">' + lbl + '</span>' : '';
-    return `<div class="hgt-tag ${cls}">${h.g} mg/dL${time}${badge}<span class="x" onclick="removeHGT(${i})">✕</span></div>`;
+    return `<div class="hgt-tag ${cls}">${h.g} mg/dL${time}<span class="x" onclick="removeHGT(${i})">✕</span></div>`;
   }).join('');
   $('btnUndoHgt').disabled = (hgtHistory.length === 0);
 }
