@@ -2287,16 +2287,13 @@ function renderFromText(txt) {
     const e = esc(line);
     if (line === '') return '<div class="pv-spacer"></div>';
     if (line.startsWith('#')) {
-      const isAlert = line.includes('⚠') || line.includes('HIPOGLICEMIA') || line.includes('>10%') || line.includes('DEP. GRAVE') || line.includes('INVESTIGAR');
-      const isWarn  = line.includes('ABAIXO DO MÍNIMO') || line.includes('↓ HIPO') || line.includes('INTERMEDIÁRIO');
-      const cls = isAlert ? ' pv-alert' : isWarn ? ' pv-warn' : '';
       const tagMatch = line.match(/^(#[A-ZÁÉÍÓÚÃÕÂÊÎÔÛÇ\s/]+:?)/);
       if (tagMatch) {
         const tag  = esc(tagMatch[1]);
         const rest = esc(line.slice(tagMatch[1].length));
-        return `<div class="pv-hash${cls}"><span class="pv-tag">${tag}</span>${rest}</div>`;
+        return `<div class="pv-hash"><span class="pv-tag">${tag}</span>${rest}</div>`;
       }
-      return `<div class="pv-hash${cls}">${e}</div>`;
+      return `<div class="pv-hash">${e}</div>`;
     }
     if (line === 'CD:') return '<div class="pv-cd-head">CD:</div>';
     if (line.startsWith('- ')) return `<div class="pv-cd-item">${esc(line.slice(2))}</div>`;
@@ -2309,10 +2306,6 @@ function renderFromText(txt) {
         .replace(/(FR:\s*)(\d+\s*IRPM)/gi, '$1<span class="pv-num">$2</span>');
       return `<div class="pv-sys"><span class="pv-sys-lbl">${lbl}:</span> ${rest}</div>`;
     }
-    if (line.includes('⚠') || line.includes('HIPOGLICEMIA') || line.includes('>10%') || line.includes('DEP. GRAVE'))
-      return `<div class="pv-line pv-alert">${e}</div>`;
-    if (line.includes('↓') || line.includes('ABAIXO'))
-      return `<div class="pv-line pv-warn">${e}</div>`;
     return `<div class="pv-line">${e}</div>`;
   }).join('');
   doc.innerHTML = html;
