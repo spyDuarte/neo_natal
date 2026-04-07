@@ -165,19 +165,24 @@ header{
   padding:10px 20px;
   font-size:13px;
   color:#92400e;
-  display:flex;
   align-items:center;
   gap:12px;
   font-family:var(--mono);
   box-shadow: var(--shadow-sm);
   animation: slideDown var(--transition-normal) ease-out;
+  display:none;
+  flex-shrink:0;
+}
+[data-theme="dark"] #restoreBanner{
+  background: linear-gradient(135deg, rgba(217,119,6,0.25) 0%, rgba(245,158,11,0.2) 100%);
+  border-bottom-color: #f59e0b;
+  color: #fbbf24;
 }
 @keyframes slideDown {
   from { transform: translateY(-100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-#restoreBanner{display:none;}
-#restoreBanner.active{display:flex;flex-shrink:0;}
+#restoreBanner.active{display:flex;}
 #restoreBanner button{
   background:#f59e0b;
   border:none;
@@ -198,6 +203,15 @@ header{
   box-shadow: var(--shadow-md);
 }
 #restoreBanner button:active{transform: translateY(0);}
+#restoreBanner .btn-dismiss{
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+}
+#restoreBanner .btn-dismiss:hover{
+  background: var(--surface);
+  color: var(--text);
+}
 
 /* LAYOUT */
 .layout{display:grid;grid-template-columns:1fr 420px;flex:1;min-height:0;gap:0;}
@@ -218,6 +232,40 @@ header{
 .form-panel::-webkit-scrollbar-track { background: transparent; }
 .form-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 .form-panel::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* FORM TOOLBAR */
+.form-toolbar{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-shrink:0;
+  padding:2px 0 4px;
+}
+.form-toolbar-label{
+  font-size:10px;
+  color:var(--muted);
+  font-family:var(--mono);
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  margin-right:2px;
+}
+.form-toolbar button{
+  background:var(--surface-elevated);
+  border:1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color:var(--text-secondary);
+  font-size:10px;
+  font-family:var(--mono);
+  padding:4px 9px;
+  cursor:pointer;
+  transition: all var(--transition-fast);
+  letter-spacing:.03em;
+}
+.form-toolbar button:hover{
+  background:var(--accent-bg);
+  border-color:var(--accent);
+  color:var(--accent);
+}
 
 /* SECTIONS */
 .sec{
@@ -435,6 +483,8 @@ input.vital-err {border-color: var(--err); background: var(--err-bg);}
 /* Peso chart */
 .peso-chart{margin:10px 0 6px;}
 .peso-chart svg{width:100%;height:65px;display:block;}
+.peso-chart .chart-line{stroke:var(--text-secondary);}
+.peso-chart .chart-base{stroke:var(--border-strong);}
 
 /* Peso rows */
 .peso-row{
@@ -920,14 +970,20 @@ hr.div{border:none;border-top:1px solid var(--border);margin:4px 0;}
   <div class="date-txt" id="hDate"></div>
 </header>
 
-<div id="restoreBanner" class="hidden">
+<div id="restoreBanner">
   <span>💾 Rascunho salvo encontrado</span>
   <button onclick="restoreData()">↩ Restaurar</button>
-  <button onclick="dismissRestore()" style="background:#ccc">Ignorar</button>
+  <button class="btn-dismiss" onclick="dismissRestore()">Ignorar</button>
 </div>
 
 <div class="layout">
 <div class="form-panel" id="fp">
+
+  <div class="form-toolbar">
+    <span class="form-toolbar-label">Seções</span>
+    <button onclick="expandAll()" title="Expandir todas as seções">▾ Expandir tudo</button>
+    <button onclick="collapseAll()" title="Recolher todas as seções">▸ Recolher tudo</button>
+  </div>
 
   <!-- ① IDENTIFICAÇÃO -->
   <div class="sec" id="s-id">
@@ -1741,7 +1797,8 @@ function toggleEditMode() {
     btn.textContent = '👁 Visualizar';
     dot.style.opacity = '0';
     ta.focus();
-    ta.dataset.hasEdits = '1';
+    // Only mark hasEdits when user actually types something
+    ta.addEventListener('input', () => { ta.dataset.hasEdits = '1'; }, { once: true });
   } else {
     doc.style.display = '';
     ta.classList.remove('active');
@@ -1757,7 +1814,7 @@ function regenEditTxt() {
   const ta = $('prevTextarea');
   if (ta.dataset.hasEdits && !confirm('Substituir o texto editado pelo gerado automaticamente?')) return;
   ta.value = gen();
-  ta.dataset.hasEdits = '1';
+  delete ta.dataset.hasEdits;
   ta.focus();
 }
 
@@ -1885,8 +1942,7 @@ function calcIdade() {
   const dias   = Math.floor(totalH / 24);
   const hs     = totalH % 24;
   if (dias === 0) return totalH + 'H DE VIDA';
-  if (dias === 1) return dias + 'D E ' + hs + 'H DE VIDA';
-  return dias + 'D DE VIDA';
+  return dias + 'D' + (hs ? ' E ' + hs + 'H' : '') + ' DE VIDA';
 }
 
 function updateIdade() {
@@ -1985,7 +2041,8 @@ function aHGT() {
   if (isNaN(g) || g <= 0) return;
   hgtHistory.push(JSON.parse(JSON.stringify(hgts)));
   hgts.push({ g, hr, dt });
-  $('hgtIn').value = ''; $('hgtHr').value = ''; $('hgtDt').value = '';
+  $('hgtIn').value = ''; $('hgtHr').value = '';
+  $('hgtDt').valueAsDate = new Date();
   renderHGT(); upd();
 }
 function removeHGT(i) {
@@ -2020,7 +2077,11 @@ function aPeso() {
   renderPeso(); upd();
 }
 function cPeso()       { pesos = []; renderPeso(); upd(); }
-function ePeso(i, val) { pesos[i].g = parseInt(val, 10) || 0; renderPeso(); upd(); }
+function ePeso(i, val) {
+  const g = parseInt(val, 10);
+  if (isNaN(g) || g <= 0) return;
+  pesos[i].g = g; renderPeso(); upd();
+}
 function removePeso(i) { pesos.splice(i, 1); renderPeso(); upd(); }
 function renderPeso() {
   const el   = $('pesoRows');
@@ -2038,14 +2099,14 @@ function renderPeso() {
     let baseLine = '';
     if (base && !isNaN(base)) {
       const by = toY(base);
-      baseLine = `<line x1="${PAD}" y1="${by}" x2="${W-PAD}" y2="${by}" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3"/>`;
+      baseLine = `<line class="chart-base" x1="${PAD}" y1="${by}" x2="${W-PAD}" y2="${by}" stroke-width="1" stroke-dasharray="4,3"/>`;
     }
     const dotsSVG = pesos.map((p, i) => {
       const d = base ? (p.g - base) / base * 100 : 0;
       const col = d < -10 ? '#e06077' : d < -7 ? '#e8a44a' : d < -3 ? '#c4b000' : '#186237';
       return `<circle cx="${toX(i)}" cy="${toY(p.g)}" r="3.5" fill="${col}" stroke="#fff" stroke-width="1.5"/>`;
     }).join('');
-    chart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${baseLine}<polyline points="${pts}" fill="none" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>${dotsSVG}</svg>`;
+    chart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${baseLine}<polyline class="chart-line" points="${pts}" fill="none" stroke-width="1.5" stroke-linejoin="round"/>${dotsSVG}</svg>`;
     chart.style.display = 'block';
   } else {
     chart.style.display = 'none';
@@ -2457,7 +2518,7 @@ function restoreData() {
 }
 
 function dismissRestore() {
-  $('restoreBanner').style.display='';
+  $('restoreBanner').classList.remove('active');
 }
 
 // ─── Init ─────────────────────────────────────────────────────────
@@ -2500,7 +2561,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const s = JSON.parse(raw);
       const hasData = Object.values(s.fields || {}).some(v2 => v2);
       const recent  = (Date.now() - (s.ts || 0)) < 86400000;
-      if (hasData && recent) $('restoreBanner').style.display='flex';
+      if (hasData && recent) $('restoreBanner').classList.add('active');
     }
   } catch(e) {}
 
