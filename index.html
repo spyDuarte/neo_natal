@@ -7,6 +7,8 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!-- SECURITY: Content Security Policy -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:;">
 <title>NeoEvolve — Evolução Neonatal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1648,8 +1650,8 @@ hr.div{border:none;border-top:1px solid var(--border);margin:4px 0;}
       Prévia da Evolução
       <span class="live-dot" id="dot"></span>
     </div>
-    <button class="btn-edit" id="btnEdit" onclick="toggleEditMode()" title="Editar texto diretamente">✏️ Editar</button>
-    <button class="btn-copy" id="btnCopy" onclick="doCopy()">📋 Copiar</button>
+    <button class="btn-edit" id="btnEdit" onclick="toggleEditMode()" title="Editar texto diretamente" aria-label="Editar texto da evolução">✏️ Editar</button>
+    <button class="btn-copy" id="btnCopy" onclick="doCopy()" aria-label="Copiar evolução para área de transferência">📋 Copiar</button>
   </div>
 
   <!-- Alert panel -->
@@ -1679,15 +1681,134 @@ hr.div{border:none;border-top:1px solid var(--border);margin:4px 0;}
   </div>
 
   <div class="prev-foot">
-    <button class="btn-alt" onclick="doClr()">🗑 Limpar</button>
-    <button class="btn-alt" onclick="window.print()" style="padding:7px 10px">🖨️</button>
-    <button class="btn-alt btn-stretch" onclick="doSave()">💾 Salvar .txt</button>
+    <button class="btn-alt" onclick="doClr()" aria-label="Limpar todos os dados do formulário">🗑 Limpar</button>
+    <button class="btn-alt" onclick="window.print()" style="padding:7px 10px" aria-label="Imprimir evolução">🖨️</button>
+    <button class="btn-alt btn-stretch" onclick="doSave()" aria-label="Salvar evolução em arquivo texto">💾 Salvar .txt</button>
   </div>
 </div>
 </div><!-- /layout -->
 
 <script>
 'use strict';
+
+// ─── SECURITY: Input Sanitization ─────────────────────────────────
+/**
+ * Sanitizes user input to prevent XSS attacks
+ * Removes or escapes potentially dangerous characters
+ */
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+=/gi, '')
+    .trim();
+}
+
+/**
+ * Sanitizes all form field values before use
+ */
+function sanitizeAllInputs() {
+  document.querySelectorAll('#fp input[type=text], #fp textarea').forEach(el => {
+    if (el.value && !el.readOnly) {
+      const sanitized = sanitizeInput(el.value);
+      if (sanitized !== el.value) {
+        el.value = sanitized;
+      }
+    }
+  });
+}
+
+// ─── VALIDATION: Clinical Data Validation ─────────────────────────
+/**
+ * Validates clinical data and returns errors array
+ */
+function validateClinicalData() {
+  const errors = [];
+  
+  // Validate vital signs ranges
+  const fc = parseInt(v('fc'));
+  if (fc && (fc < 60 || fc > 200)) {
+    errors.push({ field: 'fc', message: 'FC fora do intervalo normal (60-200 bpm)' });
+  }
+  
+  const fr = parseInt(v('fr'));
+  if (fr && (fr < 20 || fr > 80)) {
+    errors.push({ field: 'fr', message: 'FR fora do intervalo normal (20-80 irpm)' });
+  }
+  
+  const temp = parseFloat(v('temp').replace(',', '.'));
+  if (temp && (temp < 35.0 || temp > 38.5)) {
+    errors.push({ field: 'temp', message: 'Temperatura fora do intervalo normal (35.0-38.5°C)' });
+  }
+  
+  const sat = parseInt(v('sat'));
+  if (sat && (sat < 70 || sat > 100)) {
+    errors.push({ field: 'sat', message: 'SatO2 fora do intervalo normal (70-100%)' });
+  }
+  
+  // Validate APGAR scores (0-10)
+  ['ap1', 'ap5', 'ap10'].forEach(id => {
+    const val = parseInt(v(id));
+    if (isNaN(val) || val < 0 || val > 10) {
+      errors.push({ field: id, message: `APGAR deve ser entre 0 e 10` });
+    }
+  });
+  
+  // Validate birth weight
+  const pNasc = parseFloat(v('pNasc').replace(',', '.'));
+  if (pNasc && (pNasc < 400 || pNasc > 6000)) {
+    errors.push({ field: 'pNasc', message: 'Peso ao nascer fora do intervalo esperado (400-6000g)' });
+  }
+  
+  // Validate gestational age
+  const ig = parseInt(v('ig'));
+  if (ig && (ig < 22 || ig > 44)) {
+    errors.push({ field: 'ig', message: 'Idade gestacional fora do intervalo esperado (22-44 semanas)' });
+  }
+  
+  // Validate HGT values
+  hgts.forEach((h, idx) => {
+    const hgtVal = parseFloat(h.g.replace(',', '.'));
+    if (hgtVal && (hgtVal < 20 || hgtVal > 500)) {
+      errors.push({ field: 'hgt', message: `HGT ${idx + 1} fora do intervalo esperado (20-500 mg/dL)` });
+    }
+  });
+  
+  // Validate current weight
+  const pesoAtual = parseFloat(v('peso').replace(',', '.'));
+  if (pesoAtual && pesoAtual < 400) {
+    errors.push({ field: 'peso', message: 'Peso atual muito baixo (< 400g)' });
+  }
+  
+  return errors;
+}
+
+/**
+ * Shows validation errors to user
+ */
+function showValidationErrors(errors) {
+  if (errors.length === 0) return true;
+  
+  const errorMessages = errors.map(e => `• ${e.message}`).join('\n');
+  alert('⚠️ Atenção! Foram encontrados os seguintes problemas nos dados:\n\n' + errorMessages + '\n\nRevise os campos antes de prosseguir.');
+  
+  // Focus first error field
+  if (errors[0].field) {
+    const el = $(errors[0].field);
+    if (el) {
+      el.focus();
+      el.classList.add('vital-err');
+      setTimeout(() => el.classList.remove('vital-err'), 2000);
+    }
+  }
+  
+  return false;
+}
 
 // ─── State ────────────────────────────────────────────────────────
 let hgts       = [];
@@ -1787,6 +1908,7 @@ function activeText() {
   const ta = $('prevTextarea');
   if (editMode) return ta.value;
   if (ta && ta.dataset.hasEdits) return ta.value;
+  // gen() already sanitizes internally
   return gen();
 }
 
@@ -2121,6 +2243,9 @@ function buildText(lines) {
 }
 
 function gen() {
+  // Sanitize all inputs before generating output (security)
+  sanitizeAllInputs();
+  
   const lines = [];
   const add = s => { if (s !== null && s !== undefined && s !== '') lines.push(s); };
   
@@ -2389,6 +2514,17 @@ function upd() {
 
 // ─── Copy ─────────────────────────────────────────────────────────
 async function doCopy() {
+  // Sanitize inputs before copying
+  sanitizeAllInputs();
+  
+  // Validate clinical data before copying
+  const errors = validateClinicalData();
+  if (errors.length > 0) {
+    if (!showValidationErrors(errors)) {
+      return; // Stop if validation fails
+    }
+  }
+  
   const txt = activeText(); if (!txt) return;
   await navigator.clipboard.writeText(txt);
   const b = $('btnCopy');
@@ -2398,6 +2534,17 @@ async function doCopy() {
 
 // ─── Save .txt ────────────────────────────────────────────────────
 function doSave() {
+  // Sanitize inputs before saving
+  sanitizeAllInputs();
+  
+  // Validate clinical data before saving
+  const errors = validateClinicalData();
+  if (errors.length > 0) {
+    if (!showValidationErrors(errors)) {
+      return; // Stop if validation fails
+    }
+  }
+  
   const txt = activeText(); if (!txt) return;
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain;charset=utf-8' }));
@@ -2435,6 +2582,9 @@ function autoSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     try {
+      // Sanitize before saving (security)
+      sanitizeAllInputs();
+      
       const state = {
         fields: {},
         chips: {},
@@ -2460,7 +2610,11 @@ function restoreData() {
     if (!raw) return;
     const state = JSON.parse(raw);
     Object.entries(state.fields || {}).forEach(([id, val]) => {
-      const el = $(id); if (el) el.value = val;
+      const el = $(id); 
+      if (el) {
+        // Sanitize restored data (security)
+        el.value = sanitizeInput(val);
+      }
     });
     Object.entries(state.chips || {}).forEach(([grpId, selected]) => {
       const grp = $(grpId); if (!grp) return;
@@ -2471,7 +2625,7 @@ function restoreData() {
     });
     hgts  = state.hgts  || [];
     pesos = state.pesos || [];
-    if (state.notes) $('notesPriv').value = state.notes;
+    if (state.notes) $('notesPriv').value = sanitizeInput(state.notes);
     ['ap1','ap5','ap10'].forEach(id => { const el = $(id); if (el && el.value) styleApgar(el); });
     renderHGT(); renderPeso();
     $('pesoDt').valueAsDate = new Date();
@@ -2512,7 +2666,20 @@ window.addEventListener('DOMContentLoaded', () => {
   $('hgtDt').valueAsDate  = new Date();
 
   const fp = $('fp');
-  fp.addEventListener('input',  upd);
+  
+  // Add real-time sanitization on input (security)
+  fp.addEventListener('input', (e) => {
+    // Sanitize text inputs on the fly
+    if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
+      const original = e.target.value;
+      const sanitized = sanitizeInput(original);
+      if (original !== sanitized) {
+        e.target.value = sanitized;
+      }
+    }
+    upd();
+  });
+  
   fp.addEventListener('change', upd);
 
   try {
