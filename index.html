@@ -233,40 +233,6 @@ header{
 .form-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 .form-panel::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-/* FORM TOOLBAR */
-.form-toolbar{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  flex-shrink:0;
-  padding:2px 0 4px;
-}
-.form-toolbar-label{
-  font-size:10px;
-  color:var(--muted);
-  font-family:var(--mono);
-  letter-spacing:.05em;
-  text-transform:uppercase;
-  margin-right:2px;
-}
-.form-toolbar button{
-  background:var(--surface-elevated);
-  border:1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color:var(--text-secondary);
-  font-size:10px;
-  font-family:var(--mono);
-  padding:4px 9px;
-  cursor:pointer;
-  transition: all var(--transition-fast);
-  letter-spacing:.03em;
-}
-.form-toolbar button:hover{
-  background:var(--accent-bg);
-  border-color:var(--accent);
-  color:var(--accent);
-}
-
 /* SECTIONS */
 .sec{
   border:1px solid var(--border);
@@ -534,6 +500,12 @@ input.vital-err {border-color: var(--err); background: var(--err-bg);}
   box-shadow: var(--shadow-md);
   transition: all var(--transition-fast);
 }
+.free-text-editor.closed .free-text-editor-body {
+  display:none;
+}
+.free-text-editor.closed .sec-arrow {
+  transform:rotate(-90deg);
+}
 .free-text-editor:hover{box-shadow: var(--shadow-lg);}
 .free-text-editor-head{
   background: linear-gradient(135deg, var(--surface) 0%, var(--surface-elevated) 100%);
@@ -570,7 +542,6 @@ input.vital-err {border-color: var(--err); background: var(--err-bg);}
 .free-text-editor-body textarea:focus{
   border-color: var(--accent);
   box-shadow: 0 0 0 4px var(--accent-bg), var(--shadow-md);
-}
 }
 .free-text-editor-body textarea::placeholder{color:var(--muted);}
 
@@ -978,12 +949,6 @@ hr.div{border:none;border-top:1px solid var(--border);margin:4px 0;}
 
 <div class="layout">
 <div class="form-panel" id="fp">
-
-  <div class="form-toolbar">
-    <span class="form-toolbar-label">Seções</span>
-    <button onclick="expandAll()" title="Expandir todas as seções">▾ Expandir tudo</button>
-    <button onclick="collapseAll()" title="Recolher todas as seções">▸ Recolher tudo</button>
-  </div>
 
   <!-- ① IDENTIFICAÇÃO -->
   <div class="sec" id="s-id">
@@ -1662,7 +1627,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:4px 0;}
   </div>
 
   <!-- ✏️ TEXTO LIVRE -->
-  <div class="free-text-editor" id="s-livre">
+  <div class="free-text-editor closed" id="s-livre">
     <div class="free-text-editor-head" onclick="togLivre()">
       <div class="sec-icon">✏️</div>
       <div class="free-text-editor-title">Texto Livre</div>
@@ -1827,18 +1792,16 @@ function activeText() {
 
 // ─── Section toggle ───────────────────────────────────────────────
 function tog(id) { $(id).classList.toggle('closed'); }
-function expandAll()   { document.querySelectorAll('.sec').forEach(s => s.classList.remove('closed')); }
-function collapseAll() { document.querySelectorAll('.sec').forEach(s => s.classList.add('closed')); }
 
 // ─── Free-text section toggle ─────────────────────────────────────
 function togLivre() {
-  const body  = $('livreBody');
-  const arrow = $('livreArrow');
-  const hint  = $('livreHint');
-  const open  = body.style.display !== 'none';
-  body.style.display    = open ? 'none' : 'block';
-  arrow.style.transform = open ? 'rotate(-90deg)' : '';
-  hint.textContent      = open ? 'clique para expandir' : '';
+  const sec = $('s-livre');
+  sec.classList.toggle('closed');
+
+  const hint = $('livreHint');
+  if (hint) {
+     hint.textContent = sec.classList.contains('closed') ? 'clique para expandir' : '';
+  }
 }
 
 // ─── Single-select chip ───────────────────────────────────────────
@@ -2551,9 +2514,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const fp = $('fp');
   fp.addEventListener('input',  upd);
   fp.addEventListener('change', upd);
-
-  $('livreBody').style.display    = 'none';
-  $('livreArrow').style.transform = 'rotate(-90deg)';
 
   try {
     const raw = localStorage.getItem('neoevolve_draft');
